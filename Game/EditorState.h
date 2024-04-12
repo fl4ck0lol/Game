@@ -26,6 +26,8 @@ private:
     sf::Font font;
     std::map<std::string, Button*> buttons;
 
+    std::map<std::string, Button*> sideBarButtons;
+
     PauseMenu* pausemenu;
 
     void InitialiseVars();
@@ -51,6 +53,9 @@ private:
 
     TextureSelector* textureSelector;
 
+    bool collision;
+    short type;
+
 public:
     EditorState(StateData* stateData);
     virtual ~EditorState();
@@ -60,9 +65,11 @@ public:
     void render(sf::RenderTarget* target = NULL);
     void updateButtons();
     void renderButtons(sf::RenderTarget& target);
+    void renderSideBarButtons(sf::RenderTarget& target);
     void updatePauseMenuButtons();
     void updateGUI();
     void renderGUI(sf::RenderTarget& target);
     void updateTile(const float& dt);
+    void updateSideBarButtons();
 };
 

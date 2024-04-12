@@ -28,7 +28,7 @@ public:
 	void update();
 	void render(sf::RenderTarget& target);
 
-	void AddTile(const unsigned x, const unsigned y, const unsigned z, const sf::IntRect& rect);
+	void AddTile(const unsigned x, const unsigned y, const unsigned z, const sf::IntRect& rect, const bool collision, const short type);
 	void RemoveTile(const unsigned x, const unsigned y, const unsigned z);
 
 	const sf::Texture* getTileTexture() const;

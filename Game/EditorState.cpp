@@ -6,6 +6,8 @@ using namespace GUI;
 void EditorState::InitialiseVars()
 {
 	this->textureRect = sf::IntRect(0, 0, 16, 16);
+	this->collision = 0;
+	this->type = Tile_types::DEFAULT;
 }
 
 void EditorState::InitialiseKeyBinds()
@@ -50,9 +52,6 @@ void EditorState::InitialisePauseMenu()
 	this->pausemenu = new PauseMenu(*this->window, this->font);
 	this->pausemenu->addButton("QUIT", 900.f, L"ИЗХОД");
 
-	this->pausemenu->addButton("SAVE", 500.f, L"ЗАПАЗИ");
-
-	this->pausemenu->addButton("LOAD", 700.f, L"ЗАРЕДИ");
 }
 
 void EditorState::InitialiseTileMap()
@@ -84,6 +83,20 @@ void EditorState::InitialiseGUI()
 	this->sideBar.setFillColor(sf::Color(255, 255, 255, 50));
 	this->sideBar.setOutlineThickness(1.f);
 	this->sideBar.setOutlineColor(sf::Color(255, 255, 255, 200));
+
+	this->sideBarButtons["SAVE"] = new Button(
+		static_cast<float>((this->sideBar.getSize().x / 2) - 150.f),
+		static_cast<float>(100.f),
+		300, 50, L"ЗАПАЗИ", sf::Color(52, 61, 70, 50), &this->font,
+		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), 50,
+		sf::Color(107, 36, 12, 250), sf::Color(245, 204, 160, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
+
+	this->sideBarButtons["LOAD"] = new Button(
+		static_cast<float>((this->sideBar.getSize().x / 2) - 150.f),
+		static_cast<float>(400.f),
+		300, 50, L"ЗАРЕДИ", sf::Color(52, 61, 70, 50), &this->font,
+		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), 50,
+		sf::Color(107, 36, 12, 250), sf::Color(245, 204, 160, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
 
 }
 
@@ -122,12 +135,13 @@ EditorState::~EditorState()
 
 void EditorState::updateInput(const float& dt)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P) && this->lastState == 0)
+	//p menu
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["PAUSEMENU"])) && this->lastState == 0)
 	{
 		this->lastState = 1;
 	}
 
-	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P) && this->lastState == 1)
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["PAUSEMENU"])) && this->lastState == 1)
 	{
 		if (!this->paused)
 			this->pauseState();
@@ -137,12 +151,13 @@ void EditorState::updateInput(const float& dt)
 		this->lastState = 0;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Tab) && this->lastState == 0)
+	//side bar
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("SHOWBAR"))) && this->lastState == 0)
 	{
 		this->lastState = 2;
 	}
 
-	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Tab) && this->lastState == 2)
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("SHOWBAR"))) && this->lastState == 2)
 	{
 		if (this->showSidebar == 0)
 			this->showSidebar = 1;
@@ -152,9 +167,64 @@ void EditorState::updateInput(const float& dt)
 		this->lastState = 0;
 	}
 
+	//collision
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("COLLISION"))) && this->lastState == 0)
+	{
+		this->lastState = 3;
+	}
+
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("COLLISION"))) && this->lastState == 3)
+	{
+		if (this->collision == 0)
+			this->collision = 1;
+		else
+			this->collision = 0;
+
+		this->lastState = 0;
+	}
+
+	//type up
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("TYPEUP"))) && this->lastState == 0)
+	{
+		this->lastState = 4;
+	}
+
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("TYPEUP"))) && this->lastState == 4)
+	{
+		this->type++;
+
+		this->lastState = 0;
+	}
+
+	//type down
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("TYPEDOWN"))) && this->lastState == 0)
+	{
+		this->lastState = 5;
+	}
+
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("TYPEDOWN"))) && this->lastState == 5)
+	{
+		this->type--;
+
+		this->lastState = 0;
+	}
+
+	//texture button
 	if (this->buttons["SHOW_TEXTURE"]->isPressed())
 	{
 		this->textureSelector->HideUnhide();
+	}
+
+
+	//side bar buttons
+	if (this->sideBarButtons["SAVE"]->isPressed())
+	{
+		this->tileMap->saveToFile("Resources/map.txt");
+	}
+
+	if (this->sideBarButtons["LOAD"]->isPressed())
+	{
+		this->tileMap->loadFromFile("Resources/map.txt");
 	}
 }
 
@@ -175,6 +245,11 @@ void EditorState::update(const float& dt)
 		this->updatePauseMenuButtons();
 	}
 
+	if (!this->paused && this->showSidebar)
+	{
+		this->updateSideBarButtons();
+	}
+
 }
 
 void EditorState::render(sf::RenderTarget* target)
@@ -190,6 +265,11 @@ void EditorState::render(sf::RenderTarget* target)
 	if (this->paused)
 	{
 		this->pausemenu->render(*target);
+	}
+
+	if (this->showSidebar)
+	{
+		this->renderSideBarButtons(*target);
 	}
 }
 
@@ -211,16 +291,18 @@ void EditorState::renderButtons(sf::RenderTarget& target)
 	}
 }
 
+void EditorState::renderSideBarButtons(sf::RenderTarget& target)
+{
+	for (auto& it : this->sideBarButtons)
+	{
+		it.second->render(target);
+	}
+}
+
 void EditorState::updatePauseMenuButtons()
 {
 	if (this->pausemenu->isButtonPressed("QUIT"))
 		this->endState();
-
-	if (this->pausemenu->isButtonPressed("SAVE"))
-		this->tileMap->saveToFile("Resources/map.txt");
-
-	if (this->pausemenu->isButtonPressed("LOAD"))
-		this->tileMap->loadFromFile("Resources/map.txt");
 }
 
 void EditorState::updateGUI()
@@ -234,7 +316,14 @@ void EditorState::updateGUI()
 	}
 
 	std::stringstream ss;
-	ss << mousePositionScreen.x << " " << mousePositionScreen.y << " " << this->textureRect.left << " " << textureRect.top << "\n" << mousePositionGrid.x << mousePositionGrid.y;
+	ss << mousePositionScreen.x
+		<< " " << mousePositionScreen.y
+		<< " " << this->textureRect.left
+		<< " " << textureRect.top << "\n"
+		<< mousePositionGrid.x
+		<< mousePositionGrid.y
+		<< "\ncollision: " << this->collision
+		<< "\ntype: " << this->type;
 	this->cursorText.setString(ss.str());
 	this->cursorText.setPosition(this->mousePositionView.x - 100.f, this->mousePositionView.y - 30);
 
@@ -264,7 +353,7 @@ void EditorState::updateTile(const float& dt)
 		this->pressOnce = 0;
 
 		if (!this->textureSelector->getActive())
-			this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect);
+			this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type);
 		else
 			this->textureRect = this->textureSelector->getTextureRect();
 	}
@@ -280,4 +369,12 @@ void EditorState::updateTile(const float& dt)
 			this->tileMap->RemoveTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0);
 	}
 
+}
+
+void EditorState::updateSideBarButtons()
+{
+	for (auto& it : this->sideBarButtons)
+	{
+		it.second->update(mousePositionView);
+	}
 }

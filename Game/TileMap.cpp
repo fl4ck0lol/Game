@@ -77,13 +77,13 @@ void TileMap::render(sf::RenderTarget& target)
 	}
 }
 
-void TileMap::AddTile(const unsigned x, const unsigned y, const unsigned z, const sf::IntRect& rect)
+void TileMap::AddTile(const unsigned x, const unsigned y, const unsigned z, const sf::IntRect& rect, const bool collision, const short type)
 {
 	if (x < this->maxSize.x && x >= 0 && y < this->maxSize.y && y >= 0 && z < this->layers && z >= 0)
 	{
 		if (this->map[x][y][z] == nullptr)
 		{
-			this->map[x][y][z] = new Tile(x, y, this->gridSizeF, &this->tileTexture, rect);
+			this->map[x][y][z] = new Tile(x, y, this->gridSizeF, &this->tileTexture, rect, collision, type);
 			std::cout << "added tile \n";
 		}
 		else
@@ -175,7 +175,7 @@ void TileMap::loadFromFile(const std::string path)
 		unsigned z = 0;
 		unsigned trX = 0;
 		unsigned trY = 0;
-		bool colliding = 0;
+		bool collision = 0;
 		short type = 0;
 
 		inFile >> size.x >> size.y >> gridSize >> layers >> fileName;
@@ -206,9 +206,9 @@ void TileMap::loadFromFile(const std::string path)
 		if (!this->tileTexture.loadFromFile(this->fileName))
 			std::cout << "Texture didnt load: " << this->fileName;
 
-		while (inFile >> x >> y >> z >> trX >> trY >> colliding >> type)
+		while (inFile >> x >> y >> z >> trX >> trY >> collision >> type)
 		{
-			this->map[x][y][z] = new Tile(x, y, this->gridSizeF, &this->tileTexture, sf::IntRect(trX, trY, this->gridSizeU, this->gridSizeU), colliding, type);
+			this->map[x][y][z] = new Tile(x, y, this->gridSizeF, &this->tileTexture, sf::IntRect(trX, trY, this->gridSizeU, this->gridSizeU), collision, type);
 			std::cout << "tile loaded \n";
 		}
 	}

@@ -5,13 +5,13 @@ class Tile
 {
 protected:
 	sf::RectangleShape tileShape;
-	bool colliding;
+	bool collision;
 	short unsigned type;
 
 public:
 
 	Tile();
-	Tile(unsigned x, unsigned y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool colliding = false, short unsigned type = Tile_types::DEFAULT);
+	Tile(unsigned x, unsigned y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision = false, short unsigned type = Tile_types::DEFAULT);
 	virtual ~Tile();
 
 	void update();
