@@ -146,5 +146,5 @@ void GameState::InitialisePauseMenu()
 
 void GameState::InitialiseTileMap()
 {
-	this->tileMap = new TileMap(this->stateData->gridSize, 10.f, 10.f);
+	this->tileMap = new TileMap(this->stateData->gridSize, 10.f, 10.f, "Resources/GRASS+.png");
 }

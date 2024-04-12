@@ -30,6 +30,7 @@ GUI::Button::Button(float x, float y, float width, float height, std::wstring te
 	this->buttonState = idle_state;
 	this->lastState = idle_state;
 	this->setId(id);
+
 }
 
 GUI::Button::~Button()
@@ -206,7 +207,7 @@ void GUI::DropDownList::render(sf::RenderTarget& target)
 	}
 }
 
-GUI::TextureSelector::TextureSelector(float x, float y, float width, float height, float gridsize, const sf::Texture* texture) : gridsize(gridsize), active(0), hidden(1)
+GUI::TextureSelector::TextureSelector(float x, float y, float width, float height, float gridsize, const sf::Texture* texture) : gridsize(gridsize), active(0), hidden(0)
 {
 	this->bounds.setSize(sf::Vector2f(width, height));
 	this->bounds.setPosition(x, y);
@@ -240,12 +241,11 @@ GUI::TextureSelector::TextureSelector(float x, float y, float width, float heigh
 
 GUI::TextureSelector::~TextureSelector()
 {
-	delete this->hideButton;
+
 }
 
 void GUI::TextureSelector::update(const sf::Vector2i& mousepos)
 {
-	this->hideButton->update(static_cast<sf::Vector2f>(mousepos));
 
 	if (!this->hidden)
 	{
@@ -262,16 +262,18 @@ void GUI::TextureSelector::update(const sf::Vector2i& mousepos)
 				this->selector.setPosition(this->bounds.getPosition().x + this->mousePosGrid.x * this->gridsize, this->bounds.getPosition().y + this->mousePosGrid.y * this->gridsize);
 
 				this->textureRect.left = static_cast<int>(this->selector.getPosition().x - this->bounds.getPosition().x);
-				this->textureRect.top = static_cast<int>(this->selector.getPosition().y - this->bounds.getPosition().x);
+				this->textureRect.top = static_cast<int>(this->selector.getPosition().y - this->bounds.getPosition().y);
+				this->textureRect.width = static_cast<int>(this->gridsize);
+				this->textureRect.height = static_cast<int>(this->gridsize);
 			}
 	}
 }
 
 void GUI::TextureSelector::render(sf::RenderTarget& target)
 {
-	this->hideButton->render(target);
 
-	if (this->hidden)
+
+	if (!this->hidden)
 	{
 		target.draw(this->bounds);
 		target.draw(this->sheet);
@@ -288,5 +290,13 @@ const bool& GUI::TextureSelector::getActive() const
 const sf::IntRect& GUI::TextureSelector::getTextureRect() const
 {
 	return this->textureRect;
+}
+
+const bool GUI::TextureSelector::HideUnhide()
+{
+	if (this->hidden == 0)
+		return this->hidden = 1;
+	if (this->hidden == 1)
+		return this->hidden = 0;
 }
 

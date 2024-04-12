@@ -19,6 +19,8 @@ private:
 
     short unsigned pressOnce;
 
+    bool showSidebar;
+
     sf::Text cursorText;
 
     sf::Font font;
@@ -43,6 +45,7 @@ private:
     TileMap* tileMap;
 
     sf::RectangleShape selector;
+    sf::RectangleShape sideBar;
 
     sf::IntRect textureRect;
 

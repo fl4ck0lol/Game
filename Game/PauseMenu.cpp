@@ -40,7 +40,7 @@ void PauseMenu::addButton(const std::string key, float y, const std::wstring tex
 	float height = 50.f;
 	float x = this->container.getPosition().x + this->container.getSize().x / 2.f - width / 2.f;
 
-	this->buttons[key] = new Button(x, this->container.getSize().y - 300, width, height, text, sf::Color(52, 61, 70, 0), &this->font,
+	this->buttons[key] = new Button(x, y, width, height, text, sf::Color(52, 61, 70, 0), &this->font,
 		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), 50,
 		sf::Color(192, 197, 206, 250), sf::Color(101, 115, 126, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
 }

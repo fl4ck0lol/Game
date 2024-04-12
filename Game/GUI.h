@@ -79,7 +79,6 @@ namespace GUI {
 		bool active;
 		bool hidden;
 		float gridsize;
-		Button* hideButton;
 
 	public:
 		TextureSelector(float x, float y, float width, float height, float gridsize, const sf::Texture* texture );
@@ -90,5 +89,7 @@ namespace GUI {
 
 		const bool& getActive() const;
 		const sf::IntRect& getTextureRect() const;
+
+		const bool HideUnhide();
 	};
 }
