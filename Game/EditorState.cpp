@@ -8,6 +8,11 @@ void EditorState::InitialiseVars()
 	this->textureRect = sf::IntRect(0, 0, 16, 16);
 	this->collision = 0;
 	this->type = Tile_types::DEFAULT;
+
+	this->mainView.setSize(sf::Vector2f(this->stateData->gSettings->resolution.width, this->stateData->gSettings->resolution.height));
+	this->mainView.setCenter(this->stateData->gSettings->resolution.width / 2, this->stateData->gSettings->resolution.height / 2);
+
+	this->cameraSpeed = 100.f;
 }
 
 void EditorState::InitialiseKeyBinds()
@@ -57,6 +62,7 @@ void EditorState::InitialisePauseMenu()
 void EditorState::InitialiseTileMap()
 {
 	this->tileMap = new TileMap(this->stateData->gridSize, 10.f, 10.f, "Resources/GRASS+.png");
+	this->tileMap->loadFromFile("Resources/map.txt");
 }
 
 void EditorState::InitialiseGUI()
@@ -226,12 +232,32 @@ void EditorState::updateInput(const float& dt)
 	{
 		this->tileMap->loadFromFile("Resources/map.txt");
 	}
+
+	//camera
+
+	//up
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERAUP"])))
+	{
+		this->mainView.move(0.f, this->cameraSpeed * dt);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERADOWN"])))
+	{
+		this->mainView.move(0.f, -this->cameraSpeed * dt);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERALEFT"])))
+	{
+		this->mainView.move(this->cameraSpeed * dt, 0.f);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERARIGHT"])))
+	{
+		this->mainView.move(-this->cameraSpeed * dt, 0.f);
+	}
 }
 
 void EditorState::update(const float& dt)
 {
 	this->updateInput(dt);
-	this->updateMousePositions();
+	this->updateMousePositions(&this->mainView);
 
 	if (!this->paused && !this->showSidebar)
 	{
@@ -241,7 +267,7 @@ void EditorState::update(const float& dt)
 	}
 	else
 	{
-		this->pausemenu->update(this->mousePositionView);
+		this->pausemenu->update(this->mousePositionWindow);
 		this->updatePauseMenuButtons();
 	}
 
@@ -257,13 +283,18 @@ void EditorState::render(sf::RenderTarget* target)
 	if (!target)
 		target = this->window;
 
+	target->setView(this->mainView);
+
 	this->tileMap->render(*target);
+
+	target->setView(this->window->getDefaultView());
 
 	this->renderButtons(*target);
 	this->renderGUI(*target);
 
 	if (this->paused)
 	{
+		target->setView(this->window->getDefaultView());
 		this->pausemenu->render(*target);
 	}
 
@@ -278,7 +309,7 @@ void EditorState::updateButtons()
 
 	for (auto& it : this->buttons)
 	{
-		it.second->update(mousePositionView);
+		it.second->update(this->mousePositionWindow);
 	}
 
 }
@@ -293,6 +324,7 @@ void EditorState::renderButtons(sf::RenderTarget& target)
 
 void EditorState::renderSideBarButtons(sf::RenderTarget& target)
 {
+	target.setView(this->window->getDefaultView());
 	for (auto& it : this->sideBarButtons)
 	{
 		it.second->render(target);
@@ -331,15 +363,23 @@ void EditorState::updateGUI()
 
 void EditorState::renderGUI(sf::RenderTarget& target)
 {
-	if(!this->textureSelector->getActive())
+	if (!this->textureSelector->getActive())
+	{
+		target.setView(this->mainView);
 		target.draw(this->selector);
-	this->textureSelector->render(target);
-	target.draw(this->cursorText);
+	}
 
-	if(this->showSidebar)
+	target.setView(this->window->getDefaultView());
+	this->textureSelector->render(target);
+
+	if (this->showSidebar)
 	{
 		target.draw(sideBar);
 	}
+
+	target.setView(this->mainView);
+	target.draw(this->cursorText);
+
 }
 
 void EditorState::updateTile(const float& dt)
@@ -354,6 +394,7 @@ void EditorState::updateTile(const float& dt)
 
 		if (!this->textureSelector->getActive())
 			this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type);
+
 		else
 			this->textureRect = this->textureSelector->getTextureRect();
 	}
@@ -375,6 +416,6 @@ void EditorState::updateSideBarButtons()
 {
 	for (auto& it : this->sideBarButtons)
 	{
-		it.second->update(mousePositionView);
+		it.second->update(this->mousePositionWindow);
 	}
 }

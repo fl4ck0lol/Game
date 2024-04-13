@@ -152,7 +152,7 @@ void SettingsState::updateButtons(const float& dt)
 
 	for (auto& it : this->buttons)
 	{
-		it.second->update(mousePositionView);
+		it.second->update(this->mousePositionWindow);
 	}
 
 
@@ -173,7 +173,7 @@ void SettingsState::updateButtons(const float& dt)
 
 	for (auto& it : this->dropDownButtons)
 	{
-		it.second->update(mousePositionView, dt);
+		it.second->update(this->mousePositionWindow, dt);
 	}
 }
 

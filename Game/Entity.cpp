@@ -68,3 +68,8 @@ void Entity::InitialiseHitboxComp(sf::Sprite& sprite, const float offset_x, cons
 	this->hitboxComponenet = new HitboxComponent(this->sprite, offset_x, offset_x, width, height);
 }
 
+const sf::Vector2f& Entity::getPosition()
+{
+	return this->sprite.getPosition();
+}
+

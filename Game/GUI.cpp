@@ -38,10 +38,10 @@ GUI::Button::~Button()
 
 }
 
-void GUI::Button::update(const sf::Vector2f& mousePosition)
+void GUI::Button::update(const sf::Vector2i& mousePosition)
 {
 	this->buttonState = idle_state;
-	if (this->buttonShape.getGlobalBounds().contains(mousePosition))
+	if (this->buttonShape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)))
 	{
 		this->buttonState = hover_state;
 
@@ -167,7 +167,7 @@ const unsigned short& GUI::DropDownList::getActiveElemID() const
 	return this->activeElem->getId();
 }
 
-void GUI::DropDownList::update(const sf::Vector2f& mousePosition, const float& dt)
+void GUI::DropDownList::update(const sf::Vector2i& mousePosition, const float& dt)
 {
 	this->activeElem->update(mousePosition);
 

@@ -27,7 +27,7 @@ public:
 	void addButton(const std::string key, float y, const std::wstring text);
 
 	void render(sf::RenderTarget& target);
-	void update(const sf::Vector2f& mousePosition);
+	void update(const sf::Vector2i& mousePosition);
 
 	const bool isButtonPressed(const std::string key);
 

@@ -20,15 +20,16 @@ void GameState::InitialiseKeyBinds()
 }
 
 GameState::GameState(StateData* stateData)
-	: State(stateData)
+	: State(stateData), lastState(0)	
 {
-	this->lastState = 0;
+	this->InitialiseView();
 	this->InitialiseKeyBinds();
 	this->InitialiseTextures();
 	this->InitialisePlayers();
 	this->InitialiseFonts();
 	this->InitialisePauseMenu();
 	this->InitialiseTileMap();
+	this->InitialiseRender();
 }
 
 GameState::~GameState()
@@ -53,17 +54,18 @@ void GameState::updatePlayerInput(const float& dt)
 
 void GameState::update(const float& dt)
 {
-	this->updateMousePositions();
+	this->updateMousePositions(&this->view);
 	this->updateInput(dt);
 
 	if (!this->paused)
 	{
+		this->updateView(dt);
 		this->updatePlayerInput(dt);
 		this->player->update(dt);
 	}
 	else
 	{
-		this->pausemenu->update(this->mousePositionView);
+		this->pausemenu->update(this->mousePositionWindow);
 		this->updatePauseMenuButtons();
 	}
 }
@@ -78,14 +80,28 @@ void GameState::render(sf::RenderTarget* target)
 {
 	if (!target)
 		target = this->window;
-	this->window->draw(this->BG);
-	this->tileMap->render(*target);
-	this->player->render(*target); 
+	this->renderTexture.clear();
+
+	this->renderTexture.setView(this->view);
+	this->tileMap->render(this->renderTexture);
+
+	this->player->render(this->renderTexture);
 
 	if (this->paused)
 	{
-		this->pausemenu->render(*target);
+		this->renderTexture.setView(this->renderTexture.getDefaultView());
+		this->pausemenu->render(this->renderTexture);
 	}
+
+	this->renderTexture.display();
+	this->renderSprite.setTexture(this->renderTexture.getTexture());
+	target->draw(this->renderSprite);
+}
+
+void GameState::InitialiseView()
+{
+	this->view.setSize(sf::Vector2f(this->stateData->gSettings->resolution.width, this->stateData->gSettings->resolution.height));
+	this->view.setCenter(sf::Vector2f(this->stateData->gSettings->resolution.width / 2, this->stateData->gSettings->resolution.height / 2));
 }
 
 void GameState::InitialiseTextures()
@@ -130,6 +146,11 @@ void GameState::updateInput(const float& dt)
 	}
 }
 
+void GameState::updateView(const float& dt)
+{
+	this->view.setCenter(this->player->getPosition());
+}
+
 void GameState::InitialiseFonts()
 {
 	if (!this->font.loadFromFile("Fonts/Roboto-Thin.ttf"))
@@ -147,4 +168,12 @@ void GameState::InitialisePauseMenu()
 void GameState::InitialiseTileMap()
 {
 	this->tileMap = new TileMap(this->stateData->gridSize, 10.f, 10.f, "Resources/GRASS+.png");
+	this->tileMap->loadFromFile("Resources/map.txt");
+}
+
+void GameState::InitialiseRender()
+{
+	this->renderTexture.create(this->stateData->gSettings->resolution.width, this->stateData->gSettings->resolution.height);
+	this->renderSprite.setTexture(this->renderTexture.getTexture());
+	this->renderSprite.setTextureRect(sf::IntRect(0, 0, this->stateData->gSettings->resolution.width, this->stateData->gSettings->resolution.height));
 }

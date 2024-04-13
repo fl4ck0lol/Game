@@ -51,7 +51,7 @@ public:
 
 	const bool& getQuit() const;
 
-	virtual void updateMousePositions();
+	virtual void updateMousePositions(sf::View* view = nullptr);
 	void endState();
 	virtual void updateInput(const float& dt) = 0;
 	virtual void update(const float& dt) = 0;

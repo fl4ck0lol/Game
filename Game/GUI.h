@@ -33,7 +33,7 @@ namespace GUI {
 			sf::Font* font, sf::Color idle, sf::Color hover, sf::Color pressed, unsigned charSize, sf::Color idleColor, sf::Color hoverColor, sf::Color pressedColor, sf::Color outline, short unsigned id = 0);
 		~Button();
 
-		void update(const sf::Vector2f& mousePosition);
+		void update(const sf::Vector2i& mousePosition);
 		void render(sf::RenderTarget& target);
 
 		const bool isPressed() const;
@@ -63,7 +63,7 @@ namespace GUI {
 
 		const unsigned short& getActiveElemID() const;
 
-		void update(const sf::Vector2f& mousePosition, const float& dt);
+		void update(const sf::Vector2i& mousePosition, const float& dt);
 		void render(sf::RenderTarget& target);
 	};
 

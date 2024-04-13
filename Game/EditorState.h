@@ -17,6 +17,9 @@ public:
 
 private:
 
+    sf::View mainView;
+    float cameraSpeed;
+
     short unsigned pressOnce;
 
     bool showSidebar;

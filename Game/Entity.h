@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 
 #include "MovementComponent.h"
 #include "AnimationComponent.h"
@@ -33,4 +33,6 @@ public:
 	void InitialiseAnimComp(sf::Texture& textureSheet);
 	void InitialiseMoveComp(const float MaxVelocity, const float acceleration, const float deceleration);
 	void InitialiseHitboxComp(sf::Sprite& sprite, const float offset_x, const float offset_y, const float width, const float height);
+
+	virtual const sf::Vector2f& getPosition();
 };
