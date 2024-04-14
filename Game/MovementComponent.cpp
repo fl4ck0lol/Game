@@ -113,3 +113,15 @@ const bool MovementComponent::getMoveState(const short unsigned movestate) const
 	}
 	return false;
 }
+
+void MovementComponent::stopVelocityX()
+{
+	this->Velocity.x = 0.f;
+
+}
+
+void MovementComponent::stopVelocityY()
+{
+	this->Velocity.y = 0.f;
+
+}

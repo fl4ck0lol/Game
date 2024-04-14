@@ -63,6 +63,13 @@ void Player::update(const float& dt)
 	this->hitboxComponenet->update();
 }
 
+void Player::render(sf::RenderTarget& target)
+{
+	target.draw(this->sprite);
+
+	this->hitboxComponenet->render(target);
+}
+
 void Player::InitialiseVariables()
 {
 	attacking = false;

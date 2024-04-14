@@ -33,5 +33,8 @@ public:
 	const bool Idle() const;
 
 	const bool getMoveState(const short unsigned movestate) const;
+
+	void stopVelocityX();
+	void stopVelocityY();
 };
 

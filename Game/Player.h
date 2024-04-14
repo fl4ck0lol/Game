@@ -7,7 +7,8 @@ public:
     Player(sf::Texture& texture, float x, float y);
     ~Player();
 
-    virtual void update(const float& dt);
+    void update(const float& dt);
+    void render(sf::RenderTarget& target);
 
 private:
 

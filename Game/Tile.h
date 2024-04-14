@@ -22,5 +22,7 @@ public:
 	const sf::Vector2f& getPosition() const;
 
 	const bool& getCollision() const;
+
+	const bool intersects(const sf::FloatRect bounds) const;
 };
 

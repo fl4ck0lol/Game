@@ -28,10 +28,7 @@ void Entity::setTexture(sf::Texture& texture)
 void Entity::move(const float directionX, const float directionY, const float& dt)
 {
 	if (this->movementComponent)
-	{
-		this->movementComponent->Move(directionX, directionY, dt);
-	}
-		
+		this->movementComponent->Move(directionX, directionY, dt);		
 }
 
 void Entity::update(const float& dt)
@@ -41,15 +38,15 @@ void Entity::update(const float& dt)
 
 void Entity::render(sf::RenderTarget& target)
 {
-	target.draw(this->sprite);
 
-	if (this->hitboxComponenet)
-		this->hitboxComponenet->render(target);
 }
 
 void Entity::setPosition(const float x,const float y)
 {
-	this->sprite.setPosition(x, y);
+	if (this->hitboxComponenet)
+		this->hitboxComponenet->setPosition(x, y);
+	else
+		this->sprite.setPosition(x, y);
 }
 
 void Entity::InitialiseAnimComp(sf::Texture& textureSheet)
@@ -70,6 +67,39 @@ void Entity::InitialiseHitboxComp(sf::Sprite& sprite, const float offset_x, cons
 
 const sf::Vector2f& Entity::getPosition()
 {
+	if (this->hitboxComponenet)
+		return this->hitboxComponenet->getPosition();
 	return this->sprite.getPosition();
+}
+
+const sf::Vector2u Entity::getGridPos(const unsigned gridSizeU) const
+{
+	if (this->hitboxComponenet)
+		return sf::Vector2u(
+			static_cast<unsigned>(this->hitboxComponenet->getPosition().x / gridSizeU), 
+			static_cast<unsigned>(this->hitboxComponenet->getPosition().y / gridSizeU));
+
+	return sf::Vector2u(
+		static_cast<unsigned>(this->sprite.getPosition().x / gridSizeU),
+		static_cast<unsigned>(this->sprite.getPosition().y / gridSizeU));
+}
+
+const sf::FloatRect Entity::getGlobalBounds() const
+{
+	if (this->hitboxComponenet)
+		return this->hitboxComponenet->getGlobalBounds();
+	return this->sprite.getGlobalBounds();
+}
+
+void Entity::stopVelocityX()
+{
+	if (this->movementComponent)
+		this->movementComponent->stopVelocityX();
+}
+
+void Entity::stopVelocityY()
+{
+	if (this->movementComponent)
+		this->movementComponent->stopVelocityY();
 }
 

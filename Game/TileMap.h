@@ -23,6 +23,13 @@ private:
 
 	sf::Vector2f maxSizeWorld;
 
+	int fromX;
+	int toX;
+	int fromY;
+	int toY;
+	int layer;
+
+
 protected:
 	
 

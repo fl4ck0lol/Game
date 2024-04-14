@@ -21,6 +21,7 @@ Tile::Tile(unsigned x, unsigned y, float gridSizeF, const sf::Texture* texture, 
 
 Tile::~Tile()
 {
+
 }
 
 void Tile::update()
@@ -50,4 +51,9 @@ const sf::Vector2f& Tile::getPosition() const
 const bool& Tile::getCollision() const
 {
 	return this->collision;
+}
+
+const bool Tile::intersects(const sf::FloatRect bounds) const
+{
+	return this->tileShape.getGlobalBounds().intersects(bounds);
 }
