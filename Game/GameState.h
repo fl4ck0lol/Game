@@ -48,5 +48,7 @@ public:
     void render(sf::RenderTarget* target = nullptr);
     void updateInput(const float& dt);
     void updateView(const float& dt);
+
+    void updateTileMap(const float& dt);
 };
 

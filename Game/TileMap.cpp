@@ -30,6 +30,8 @@ TileMap::TileMap(float gridSize, unsigned width, unsigned height, std::string fi
 	this->gridSizeU = static_cast<unsigned>(this->gridSizeF);
 	this->maxSize.x = width;
 	this->maxSize.y = height;
+	this->maxSizeWorld.x = static_cast<float>(width) * gridSize;
+	this->maxSizeWorld.x = static_cast<float>(height) * gridSize;
 	this->layers = 1;
 	this->fileName = fileName;
 	
@@ -49,6 +51,9 @@ TileMap::TileMap(float gridSize, unsigned width, unsigned height, std::string fi
 
 	if (!this->tileTexture.loadFromFile(this->fileName))
 		std::cout << "Texture didnt load: " << this->fileName;
+
+	this->collisionBox.setSize(sf::Vector2f(gridSize, gridSize));
+	this->collisionBox.setFillColor(sf::Color(255, 0, 0, 50));
 }
 
 TileMap::~TileMap()
@@ -62,7 +67,7 @@ void TileMap::update()
 
 }
 
-void TileMap::render(sf::RenderTarget& target)
+void TileMap::render(sf::RenderTarget& target, Entity* entity)
 {
 	for (auto& x : this->map)
 	{
@@ -70,8 +75,15 @@ void TileMap::render(sf::RenderTarget& target)
 		{
 			for (auto& z : y)
 			{
-				if(z != nullptr)
+				if (z != nullptr)
+				{
 					z->render(target);
+					if (z->getCollision())
+					{
+						this->collisionBox.setPosition(z->getPosition());
+						target.draw(this->collisionBox);
+					}
+				}
 			}
 		}
 	}
@@ -156,7 +168,6 @@ void TileMap::saveToFile(const std::string path)
 
 }
 
-
 void TileMap::loadFromFile(const std::string path)
 {
 
@@ -216,4 +227,20 @@ void TileMap::loadFromFile(const std::string path)
 		std::cout << "Tile map not loaded: " << path;
 
 	inFile.close();
+}
+
+void TileMap::updateCollision(Entity* entity)
+{
+	if (entity->getPosition().x < 0.f)
+		entity->setPosition(0.f, entity->getPosition().y);
+
+	else if (entity->getPosition().x > this->maxSizeWorld.x)
+		entity->setPosition(this->maxSizeWorld.x, entity->getPosition().y);
+
+	else if (entity->getPosition().y < 0.f)
+		entity->setPosition(entity->getPosition().x, 0.f);
+
+	else if (entity->getPosition().y > this->maxSizeWorld.y)
+		entity->setPosition(entity->getPosition().x, this->maxSizeWorld.y);
+
 }

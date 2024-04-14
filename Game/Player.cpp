@@ -11,9 +11,9 @@ Player::Player(sf::Texture& textureSheet, float x, float y)
 	this->InitialiseAnimComp(textureSheet);
 	this->InitialiseHitboxComp(this->sprite, 10.f, 5.f, 40.f, 50.f);
 
-	this->animationComponent->addAnimation("IDLE", 11.f, 0, 4, 5, 4, 64, 65);
-	this->animationComponent->addAnimation("WALK", 7.f, 0, 3, 7, 3, 64, 65);
-	this->animationComponent->addAnimation("ATTACK", 7.f, 0, 8, 7, 8, 64, 65);
+	this->animationComponent->addAnimation("IDLE", 11.f, 0, 4, 5, 4, 64, 64);
+	this->animationComponent->addAnimation("WALK", 7.f, 0, 3, 7, 3, 64, 64);
+	this->animationComponent->addAnimation("ATTACK", 7.f, 0, 8, 7, 8, 64, 64);
 }
 
 Player::~Player()

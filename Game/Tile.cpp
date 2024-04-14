@@ -41,3 +41,13 @@ const std::string Tile::getAsString() const
 
 	return ss.str();
 }
+
+const sf::Vector2f& Tile::getPosition() const
+{
+	return this->tileShape.getPosition();
+}
+
+const bool& Tile::getCollision() const
+{
+	return this->collision;
+}

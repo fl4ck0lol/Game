@@ -12,7 +12,7 @@ void EditorState::InitialiseVars()
 	this->mainView.setSize(sf::Vector2f(this->stateData->gSettings->resolution.width, this->stateData->gSettings->resolution.height));
 	this->mainView.setCenter(this->stateData->gSettings->resolution.width / 2, this->stateData->gSettings->resolution.height / 2);
 
-	this->cameraSpeed = 100.f;
+	this->cameraSpeed = 300.f;
 }
 
 void EditorState::InitialiseKeyBinds()
@@ -103,6 +103,8 @@ void EditorState::InitialiseGUI()
 		300, 50, L"ЗАРЕДИ", sf::Color(52, 61, 70, 50), &this->font,
 		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), 50,
 		sf::Color(107, 36, 12, 250), sf::Color(245, 204, 160, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
+
+
 
 }
 
@@ -238,19 +240,19 @@ void EditorState::updateInput(const float& dt)
 	//up
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERAUP"])))
 	{
-		this->mainView.move(0.f, this->cameraSpeed * dt);
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERADOWN"])))
-	{
 		this->mainView.move(0.f, -this->cameraSpeed * dt);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERALEFT"])))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERADOWN"])))
 	{
-		this->mainView.move(this->cameraSpeed * dt, 0.f);
+		this->mainView.move(0.f, this->cameraSpeed * dt);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERARIGHT"])))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERALEFT"])))
 	{
 		this->mainView.move(-this->cameraSpeed * dt, 0.f);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds["CAMERARIGHT"])))
+	{
+		this->mainView.move(this->cameraSpeed * dt, 0.f);
 	}
 }
 
