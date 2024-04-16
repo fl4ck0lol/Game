@@ -61,8 +61,8 @@ void GameState::update(const float& dt)
 	{
 		this->updateView(dt);
 		this->updatePlayerInput(dt);
-		this->player->update(dt);
 		this->updateTileMap(dt);
+		this->player->update(dt);
 	}
 	else
 	{
@@ -84,9 +84,12 @@ void GameState::render(sf::RenderTarget* target)
 	this->renderTexture.clear();
 
 	this->renderTexture.setView(this->view);
-	this->tileMap->render(this->renderTexture, this->player);
+
+	this->tileMap->render(this->renderTexture, &this->player->getGridPos(static_cast<int>(this->stateData->gridSize)));
 
 	this->player->render(this->renderTexture);
+
+	this->tileMap->renderDeferred(this->renderTexture);
 
 	if (this->paused)
 	{
@@ -155,7 +158,7 @@ void GameState::updateView(const float& dt)
 void GameState::updateTileMap(const float& dt)
 {
 	this->tileMap->update();
-	this->tileMap->updateCollision(this->player);
+	this->tileMap->updateCollision(this->player, dt);
 }
 
 void GameState::InitialiseFonts()
@@ -174,7 +177,7 @@ void GameState::InitialisePauseMenu()
 
 void GameState::InitialiseTileMap()
 {
-	this->tileMap = new TileMap(this->stateData->gridSize, 10.f, 10.f, "Resources/GRASS+.png");
+	this->tileMap = new TileMap(this->stateData->gridSize, 1000, 1000, "Resources/GRASS+.png");
 	this->tileMap->loadFromFile("Resources/map.txt");
 }
 

@@ -19,7 +19,7 @@ void MovementComponent::Update(const float& dt)
 		if (this->Velocity.x > this->maxVelocity)
 			this->Velocity.x = maxVelocity;
 
-		this->Velocity.x -= deceleration;
+		this->Velocity.x -= deceleration * dt;
 		if (this->Velocity.x < 0.f)
 			this->Velocity.x = 0;
 
@@ -29,7 +29,7 @@ void MovementComponent::Update(const float& dt)
 		if (this->Velocity.x < -this->maxVelocity)
 			this->Velocity.x = -this->maxVelocity;
 
-		this->Velocity.x += deceleration;
+		this->Velocity.x += deceleration * dt;
 		if (this->Velocity.x > 0.f)
 			this->Velocity.x = 0;
 	}
@@ -38,7 +38,7 @@ void MovementComponent::Update(const float& dt)
 		if (this->Velocity.y > this->maxVelocity)
 			this->Velocity.y = maxVelocity;
 
-		this->Velocity.y -= deceleration;
+		this->Velocity.y -= deceleration * dt;
 		if (this->Velocity.y < 0.f)
 			this->Velocity.y = 0;
 
@@ -48,7 +48,7 @@ void MovementComponent::Update(const float& dt)
 		if (this->Velocity.y < -this->maxVelocity)
 			this->Velocity.y = -this->maxVelocity;
 
-		this->Velocity.y += deceleration;
+		this->Velocity.y += deceleration * dt;
 		if (this->Velocity.y > 0.f)
 			this->Velocity.y = 0;
 	}
@@ -58,9 +58,9 @@ void MovementComponent::Update(const float& dt)
 
 void MovementComponent::Move(const float directionX, const float directionY, const float& dt)
 {
-	this->Velocity.x += this->acceleration * directionX;
+	this->Velocity.x += this->acceleration * directionX * dt;
 
-	this->Velocity.y += this->acceleration * directionY;
+	this->Velocity.y += this->acceleration * directionY * dt;
 
 }
 

@@ -7,7 +7,7 @@ Player::Player(sf::Texture& textureSheet, float x, float y)
 
 	this->setPosition(x, y);
 
-	this->InitialiseMoveComp(200.f, 15.f, 5.f);
+	this->InitialiseMoveComp(350.f, 1500.f, 500.f);
 	this->InitialiseAnimComp(textureSheet);
 	this->InitialiseHitboxComp(this->sprite, 10.f, 5.f, 40.f, 50.f);
 

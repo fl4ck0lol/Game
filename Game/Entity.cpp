@@ -65,23 +65,23 @@ void Entity::InitialiseHitboxComp(sf::Sprite& sprite, const float offset_x, cons
 	this->hitboxComponenet = new HitboxComponent(this->sprite, offset_x, offset_x, width, height);
 }
 
-const sf::Vector2f& Entity::getPosition()
+const sf::Vector2f& Entity::getPosition() const
 {
 	if (this->hitboxComponenet)
 		return this->hitboxComponenet->getPosition();
 	return this->sprite.getPosition();
 }
 
-const sf::Vector2u Entity::getGridPos(const unsigned gridSizeU) const
+const sf::Vector2i& Entity::getGridPos(const int gridSizeI) const
 {
 	if (this->hitboxComponenet)
-		return sf::Vector2u(
-			static_cast<unsigned>(this->hitboxComponenet->getPosition().x / gridSizeU), 
-			static_cast<unsigned>(this->hitboxComponenet->getPosition().y / gridSizeU));
+	return sf::Vector2i(
+			static_cast<int>(this->hitboxComponenet->getPosition().x / gridSizeI),
+			static_cast<int>(this->hitboxComponenet->getPosition().y / gridSizeI));
 
-	return sf::Vector2u(
-		static_cast<unsigned>(this->sprite.getPosition().x / gridSizeU),
-		static_cast<unsigned>(this->sprite.getPosition().y / gridSizeU));
+	return sf::Vector2i(
+		static_cast<int>(this->sprite.getPosition().x / gridSizeI),
+		static_cast<int>(this->sprite.getPosition().y / gridSizeI));
 }
 
 const sf::FloatRect Entity::getGlobalBounds() const
@@ -89,6 +89,13 @@ const sf::FloatRect Entity::getGlobalBounds() const
 	if (this->hitboxComponenet)
 		return this->hitboxComponenet->getGlobalBounds();
 	return this->sprite.getGlobalBounds();
+}
+
+const sf::FloatRect Entity::getNextPosBounds(const float& dt) const
+{
+	if (this->hitboxComponenet && this->movementComponent)
+		return this->hitboxComponenet->getNextPos(this->movementComponent->getVelocity() * dt);
+	return sf::FloatRect(-1, -1, -1, -1);
 }
 
 void Entity::stopVelocityX()

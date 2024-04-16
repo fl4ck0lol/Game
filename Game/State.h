@@ -33,7 +33,7 @@ protected:
 	sf::Vector2i mousePositionScreen;
 	sf::Vector2i mousePositionWindow;
 	sf::Vector2f mousePositionView;
-	sf::Vector2u mousePositionGrid;
+	sf::Vector2i mousePositionGrid;
 	std::stack<State*>* states;
 
 	virtual void InitialiseKeyBinds() = 0;

@@ -29,8 +29,6 @@ private:
     sf::Font font;
     std::map<std::string, Button*> buttons;
 
-    std::map<std::string, Button*> sideBarButtons;
-
     PauseMenu* pausemenu;
 
     void InitialiseVars();
@@ -58,6 +56,7 @@ private:
 
     bool collision;
     short type;
+    int layer;
 
 public:
     EditorState(StateData* stateData);
@@ -73,6 +72,5 @@ public:
     void updateGUI();
     void renderGUI(sf::RenderTarget& target);
     void updateTile(const float& dt);
-    void updateSideBarButtons();
 };
 

@@ -1,5 +1,5 @@
 #pragma once
-enum Tile_types{DEFAULT = 0, DAMAGING};
+enum Tile_types{DEFAULT = 0, DAMAGING, DOODAD};
 
 class Tile
 {
@@ -11,7 +11,7 @@ protected:
 public:
 
 	Tile();
-	Tile(unsigned x, unsigned y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision = false, short unsigned type = Tile_types::DEFAULT);
+	Tile(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision = false, short type = Tile_types::DEFAULT);
 	virtual ~Tile();
 
 	void update();
@@ -21,8 +21,12 @@ public:
 
 	const sf::Vector2f& getPosition() const;
 
+	const sf::FloatRect getGlobalBounds();
+
 	const bool& getCollision() const;
 
 	const bool intersects(const sf::FloatRect bounds) const;
+
+	const short& getType() const;
 };
 
