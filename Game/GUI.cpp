@@ -1,6 +1,21 @@
 ﻿#include "stdafx.h"
 #include "GUI.h"
 
+const float GUI::PixelPercentX(const float perc, const sf::VideoMode& vm)
+{
+	return std::floor(vm.width * (perc / 100.f));
+}
+
+const float GUI::PixelPercentY(const float perc, const sf::VideoMode& vm)
+{
+	return std::floor(vm.height * (perc / 100.f));
+}
+
+const unsigned GUI::calcCharSize(const sf::VideoMode& vm)
+{
+	return static_cast<unsigned>((vm.width + vm.height) / 60);
+}
+
 
 //button
 
@@ -113,9 +128,11 @@ void GUI::Button::setId(const short unsigned id)
 	this->id = id;
 }
 
-void GUI::Button::updatePosition(const float x, const float y)
+void GUI::Button::updateProperties(const float x, const float y, const float width, const float height, short unsigned charSize)
 {
+	this->buttonShape.setSize(sf::Vector2f(width, height));
 	this->buttonShape.setPosition(sf::Vector2f(x, y));
+	this->Buttontext.setCharacterSize(charSize);
 	this->Buttontext.setPosition(
 		this->buttonShape.getPosition().x + (this->buttonShape.getGlobalBounds().width / 2.f) - this->Buttontext.getGlobalBounds().width / 2.f,
 		this->buttonShape.getPosition().y + (this->buttonShape.getGlobalBounds().height / 2.f) - this->Buttontext.getGlobalBounds().height / 1.2f);
@@ -148,7 +165,6 @@ GUI::DropDownList::DropDownList(float x, float y, float width, float height, sf:
 			sf::Color(255, 255, 255, 255),
 			sf::Color(255, 255, 255, 255), sf::Color::Transparent, i));
 	}
-
 
 }
 
@@ -200,6 +216,10 @@ void GUI::DropDownList::render(sf::RenderTarget& target)
 
 			if (i->isPressed())
 			{	
+				if (i->getId() != this->activeElem->getId())
+				{
+					this->showList = 0;
+				}
 				this->activeElem->setId(i->getId());
 			}
 
@@ -282,7 +302,7 @@ void GUI::TextureSelector::render(sf::RenderTarget& target)
 	}
 }	
 
-const bool& GUI::TextureSelector::getActive() const
+bool& GUI::TextureSelector::getActive()
 {
 	return this->active;
 }
@@ -290,13 +310,5 @@ const bool& GUI::TextureSelector::getActive() const
 const sf::IntRect& GUI::TextureSelector::getTextureRect() const
 {
 	return this->textureRect;
-}
-
-const bool GUI::TextureSelector::HideUnhide()
-{
-	if (this->hidden == 0)
-		return this->hidden = 1;
-	if (this->hidden == 1)
-		return this->hidden = 0;
 }
 

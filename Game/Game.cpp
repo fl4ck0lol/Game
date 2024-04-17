@@ -5,7 +5,7 @@ void Game::initialiseVariebles()
 {
 	this->window = NULL;
 	this->dt = 0.f;
-	this->gridSize = 100.f;
+	this->gridSize = 64.f;
 }
 
 //------------------ initialise Functions---------------
@@ -53,12 +53,10 @@ void Game::initialiseStateData()
 	this->stateData.gridSize = this->gridSize;	
 }
 
-
 void Game::initialiseState()
 {
 	this->states.push(new MainMenuState(&this->stateData));
 }
-
 
 void Game::endApp()
 {
@@ -132,7 +130,6 @@ void Game::updateDT()
 }
 
 //---------------------------------
-
 
 //-------constructor--------
 Game::Game()

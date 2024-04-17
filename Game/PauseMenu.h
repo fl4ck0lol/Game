@@ -20,11 +20,11 @@ using namespace GUI;
 class PauseMenu
 {
 public:
-	PauseMenu(sf::RenderWindow& window, sf::Font& font);
+	PauseMenu(sf::VideoMode& vm, sf::Font& font);
 	virtual ~PauseMenu();
 
 	std::map<std::string, Button*>& getButtons();
-	void addButton(const std::string key, float y, const std::wstring text);
+	void addButton(const std::string key, const float y, const float width, const float height, const unsigned charSize, const std::wstring text);
 
 	void render(sf::RenderTarget& target);
 	void update(const sf::Vector2i& mousePosition);

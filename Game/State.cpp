@@ -56,4 +56,3 @@ void State::unpauseState()
 	this->paused = false;
 }
 
-

@@ -10,10 +10,7 @@ class State;
 class StateData
 {
 public:
-	StateData()
-	{
-		
-	}
+	StateData() {};
 
 	float gridSize;
 	sf::RenderWindow* window;
@@ -59,5 +56,6 @@ public:
 
 	void pauseState();
 	void unpauseState();
+
 };
 

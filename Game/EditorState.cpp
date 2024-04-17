@@ -14,8 +14,9 @@ void EditorState::InitialiseVars()
 
 	this->cameraSpeed = 300.f;
 	this->layer = 0;
-	pressOnce = 0;
-	showSidebar = 0;
+	this->pressOnce = 0;
+	this->showSidebar = 0;
+	this->showTextureSelector = 0;
 }
 
 void EditorState::InitialiseKeyBinds()
@@ -52,44 +53,10 @@ void EditorState::InitialiseText()
 
 void EditorState::IntitialiseButtons()
 {
-	
-}
-
-void EditorState::InitialisePauseMenu()
-{
-	this->pausemenu = new PauseMenu(*this->window, this->font);
-	this->pausemenu->addButton("QUIT", 900.f, L"ИЗХОД");
-
-}
-
-void EditorState::InitialiseTileMap()
-{
-	this->tileMap = new TileMap(this->stateData->gridSize, 1000, 1000, "Resources/tilesheet1png");	
-	this->tileMap->loadFromFile("Resources/map.txt");
-}
-
-void EditorState::InitialiseGUI()
-{
-	this->selector.setSize(sf::Vector2f(this->stateData->gridSize, this->stateData->gridSize));
-	this->selector.setFillColor(sf::Color(255, 255, 255, 50));
-	this->selector.setOutlineThickness(1.f);
-	this->selector.setOutlineColor(sf::Color::Red);
-	this->selector.setTexture(this->tileMap->getTileTexture());
-
-	this->sideBar.setSize(sf::Vector2f(300.f, this->window->getSize().y));
-	this->sideBar.setFillColor(sf::Color(0, 0, 0, 150));
-	this->sideBar.setOutlineThickness(1.f);
-	this->sideBar.setOutlineColor(sf::Color(255, 255, 255, 200));
-
-	this->textureSelector = new TextureSelector(
-		this->window->getSize().x - 520.f, 
-		this->window->getSize().y - (this->window->getSize().y - 20.f), 
-		500.f, 500.f, this->stateData->gridSize, this->tileMap->getTileTexture());
-
 	this->buttons["SHOW_TEXTURE"] = new Button(
 		static_cast<float>((this->sideBar.getSize().x / 2) - 150.f),
 		static_cast<float>(700.f),
-			300, 50, L"ТЕКСТУРИ", sf::Color(52, 61, 70, 50), &this->font,
+		300, 50, L"ТЕКСТУРИ", sf::Color(52, 61, 70, 50), &this->font,
 		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), 50,
 		sf::Color(255, 255, 255, 255), sf::Color(245, 204, 160, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
 
@@ -107,9 +74,39 @@ void EditorState::InitialiseGUI()
 		300, 50, L"ЗАРЕДИ", sf::Color(52, 61, 70, 50), &this->font,
 		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), 50,
 		sf::Color(255, 255, 255, 255), sf::Color(245, 204, 160, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
+}
 
+void EditorState::InitialisePauseMenu()
+{
+	sf::VideoMode& vm = this->stateData->gSettings->resolution;
+	this->pausemenu = new PauseMenu(vm, this->font);
+	this->pausemenu->addButton("QUIT", GUI::PixelPercentY(83.33, vm), GUI::PixelPercentX(13.13, vm), GUI::PixelPercentY(7.41, vm), GUI::calcCharSize(vm), L"ИЗХОД");
 
+}
 
+void EditorState::InitialiseTileMap()
+{
+	this->tileMap = new TileMap(this->stateData->gridSize, 100, 100, "Resources/tilesheet1.png");	
+	this->tileMap->loadFromFile("Resources/map.txt");
+}
+
+void EditorState::InitialiseGUI()
+{
+	this->selector.setSize(sf::Vector2f(this->stateData->gridSize, this->stateData->gridSize));
+	this->selector.setFillColor(sf::Color(255, 255, 255, 50));
+	this->selector.setOutlineThickness(1.f);
+	this->selector.setOutlineColor(sf::Color::Red);
+	this->selector.setTexture(this->tileMap->getTileTexture());
+
+	this->sideBar.setSize(sf::Vector2f(300.f, this->window->getSize().y));
+	this->sideBar.setFillColor(sf::Color(0, 0, 0, 150));
+	this->sideBar.setOutlineThickness(1.f);
+	this->sideBar.setOutlineColor(sf::Color(255, 255, 255, 200));
+
+	this->textureSelector = new TextureSelector(
+		(this->window->getSize().x / 2) - 400, 
+		(this->window->getSize().y / 2) - 320,
+		800.f, 640.f, this->stateData->gridSize, this->tileMap->getTileTexture());
 }
 
 void EditorState::InitialiseBackGround()
@@ -125,9 +122,9 @@ EditorState::EditorState(StateData* stateData) : lastState(0), State(stateData)
 	this->InitialiseFonts();
 	this->InitialiseText();
 	this->InitialisePauseMenu();
-	this->IntitialiseButtons();
 	this->InitialiseTileMap();
 	this->InitialiseGUI();
+	this->IntitialiseButtons();
 }
 
 EditorState::~EditorState()
@@ -223,7 +220,10 @@ void EditorState::updateInput(const float& dt)
 	//texture button
 	if (this->buttons["SHOW_TEXTURE"]->isPressed())
 	{
-		this->textureSelector->HideUnhide();
+		if(this->showTextureSelector == 1)
+			this->showTextureSelector = 0;
+		else
+			this->showTextureSelector = 1;
 	}
 
 
@@ -336,7 +336,10 @@ void EditorState::updatePauseMenuButtons()
 
 void EditorState::updateGUI()
 {
+
 	this->textureSelector->update(this->mousePositionWindow);
+	if (this->showTextureSelector == 0)
+		this->textureSelector->getActive() = 0;
 
 	if (!this->textureSelector->getActive())
 	{
@@ -368,7 +371,8 @@ void EditorState::renderGUI(sf::RenderTarget& target)
 	}
 
 	target.setView(this->window->getDefaultView());
-	this->textureSelector->render(target);
+	if(this->showTextureSelector)
+		this->textureSelector->render(target);
 
 	if (this->showSidebar)
 	{

@@ -44,7 +44,8 @@ namespace GUI {
 
 		void setId(const short unsigned id);
 
-		void updatePosition(const float x, const float y);
+		void updateProperties(const float x, const float y, const float width, const float height, short unsigned charSize);
+
 	};
 
 	class DropDownList {
@@ -87,9 +88,10 @@ namespace GUI {
 		void update(const sf::Vector2i& mousepos);
 		void render(sf::RenderTarget& target);
 
-		const bool& getActive() const;
+		bool& getActive();
 		const sf::IntRect& getTextureRect() const;
-
-		const bool HideUnhide();
 	};
+	const float PixelPercentX(const float perc, const sf::VideoMode& vm);
+	const float PixelPercentY(const float perc, const sf::VideoMode& vm);
+	const unsigned calcCharSize(const sf::VideoMode& vm);
 }

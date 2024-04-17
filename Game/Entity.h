@@ -3,6 +3,7 @@
 #include "MovementComponent.h"
 #include "AnimationComponent.h"
 #include "HitboxComponent.h"
+#include "AttributeComponent.h"
 
 
 class Entity
@@ -17,6 +18,7 @@ protected:
 	MovementComponent* movementComponent;
 	AnimationComponent* animationComponent;
 	HitboxComponent* hitboxComponenet;
+	AttributeComponent* attributeComponent;
 
 public:
 	Entity();
@@ -33,6 +35,7 @@ public:
 	void InitialiseAnimComp(sf::Texture& textureSheet);
 	void InitialiseMoveComp(const float MaxVelocity, const float acceleration, const float deceleration);
 	void InitialiseHitboxComp(sf::Sprite& sprite, const float offset_x, const float offset_y, const float width, const float height);
+	void InitialiseAttributeComp(const unsigned lvl);
 
 	virtual const sf::Vector2f& getPosition() const;
 	virtual const sf::Vector2i& getGridPos(const int gridSizei) const;
@@ -42,4 +45,5 @@ public:
 
 	virtual void stopVelocityX();
 	virtual void stopVelocityY();
+
 };

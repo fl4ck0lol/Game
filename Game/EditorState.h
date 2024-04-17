@@ -23,6 +23,7 @@ private:
     short unsigned pressOnce;
 
     bool showSidebar;
+    bool showTextureSelector;
 
     sf::Text cursorText;
 

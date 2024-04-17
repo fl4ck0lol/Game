@@ -250,7 +250,7 @@ void TileMap::loadFromFile(const std::string path)
 
 		inFile >> size.x >> size.y >> gridSize >> layers >> fileName;
 
-		this->gridSizeF =static_cast<float>(gridSize);
+		this->gridSizeF = static_cast<float>(gridSize);
 		this->gridSizeI = gridSize;
 		this->maxSize.x = size.x;
 		this->maxSize.y = size.y;

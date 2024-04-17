@@ -30,17 +30,19 @@ GameState::GameState(StateData* stateData)
 	this->InitialisePauseMenu();
 	this->InitialiseTileMap();
 	this->InitialiseRender();
+	this->InitialisePlayerGUI();
 }
-
+	
 GameState::~GameState()
 {
 	delete this->player;
 	delete this->pausemenu;
+	delete this->playerGUI;
+	delete this->tileMap;
 }
 
 void GameState::updatePlayerInput(const float& dt)
 {
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("MOVE_LEFT"))))
 		this->player->move(-1.f, 0.f, dt);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("MOVE_RIGHT"))))
@@ -49,7 +51,6 @@ void GameState::updatePlayerInput(const float& dt)
 		this->player->move(0.f, -1.f, dt);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("MOVE_DOWN"))))
 		this->player->move(0.f, 1.f, dt);
-
 }
 
 void GameState::update(const float& dt)
@@ -63,6 +64,7 @@ void GameState::update(const float& dt)
 		this->updatePlayerInput(dt);
 		this->updateTileMap(dt);
 		this->player->update(dt);
+		this->playerGUI->update(dt);
 	}
 	else
 	{
@@ -91,9 +93,12 @@ void GameState::render(sf::RenderTarget* target)
 
 	this->tileMap->renderDeferred(this->renderTexture);
 
+	this->renderTexture.setView(this->renderTexture.getDefaultView());
+	this->playerGUI->render(this->renderTexture);
+
 	if (this->paused)
 	{
-		this->renderTexture.setView(this->renderTexture.getDefaultView());
+		//this->renderTexture.setView(this->renderTexture.getDefaultView());
 		this->pausemenu->render(this->renderTexture);
 	}
 
@@ -152,13 +157,22 @@ void GameState::updateInput(const float& dt)
 
 void GameState::updateView(const float& dt)
 {
-	this->view.setCenter(std::floor(this->player->getPosition().x), std::floor(this->player->getPosition().y));
+
+	this->view.setCenter(
+		std::floor(this->player->getPosition().x + (static_cast<float>(this->mousePositionWindow.x) - static_cast<float>(this->stateData->gSettings->resolution.width / 2)) / 5.f),
+		std::floor(this->player->getPosition().y + (static_cast<float>(this->mousePositionWindow.y) - static_cast<float>(this->stateData->gSettings->resolution.height / 2)) / 5.f)
+	);
 }
 
 void GameState::updateTileMap(const float& dt)
 {
 	this->tileMap->update();
 	this->tileMap->updateCollision(this->player, dt);
+}
+
+void GameState::updatePlayerGUI(const float& dt)
+{
+	this->playerGUI->update(dt);
 }
 
 void GameState::InitialiseFonts()
@@ -171,13 +185,14 @@ void GameState::InitialiseFonts()
 
 void GameState::InitialisePauseMenu()
 {
-	this->pausemenu = new PauseMenu(*this->window, this->font);
-	this->pausemenu->addButton("QUIT", 900.f, L"Изход");
+	sf::VideoMode& vm = this->stateData->gSettings->resolution;
+	this->pausemenu = new PauseMenu(this->stateData->gSettings->resolution, this->font);
+	this->pausemenu->addButton("QUIT", GUI::PixelPercentY(83.33, vm), GUI::PixelPercentX(13.13, vm), GUI::PixelPercentY(7.41, vm), GUI::calcCharSize(vm), L"Изход");
 }
 
 void GameState::InitialiseTileMap()
 {
-	this->tileMap = new TileMap(this->stateData->gridSize, 1000, 1000, "Resources/GRASS+.png");
+	this->tileMap = new TileMap(this->stateData->gridSize, 100, 100, "Resources/tilesheet1.png");
 	this->tileMap->loadFromFile("Resources/map.txt");
 }
 
@@ -186,4 +201,10 @@ void GameState::InitialiseRender()
 	this->renderTexture.create(this->stateData->gSettings->resolution.width, this->stateData->gSettings->resolution.height);
 	this->renderSprite.setTexture(this->renderTexture.getTexture());
 	this->renderSprite.setTextureRect(sf::IntRect(0, 0, this->stateData->gSettings->resolution.width, this->stateData->gSettings->resolution.height));
+}
+
+void GameState::InitialisePlayerGUI()
+{
+	sf::VideoMode& vm = this->stateData->gSettings->resolution;
+	this->playerGUI = new PlayerGUI(this->player, vm);
 }

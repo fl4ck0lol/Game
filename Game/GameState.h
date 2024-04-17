@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "PauseMenu.h"
 #include "TileMap.h"
+#include "PlayerGUI.h"
 
 class Player;
 class PauseMenu;
@@ -11,7 +12,7 @@ class TileMap;
 class sf::View;
 class sf::Font;
 class sf::RenderTexture;
-
+class PlayerGUI;
 
 class GameState :
     public State
@@ -24,12 +25,13 @@ private:
 
     PauseMenu* pausemenu;
     Player* player;
-    void InitialiseKeyBinds();
+    PlayerGUI* playerGUI;
     sf::RectangleShape BG;
     sf::Font font;
     short unsigned lastState;
     TileMap* tileMap;
 
+    void InitialiseKeyBinds();
     void InitialiseView();
     void InitialiseTextures();
     void InitialisePlayers();
@@ -37,6 +39,7 @@ private:
     void InitialisePauseMenu();
     void InitialiseTileMap();
     void InitialiseRender();
+    void InitialisePlayerGUI();
 
 public:
     GameState(StateData* stateData);
@@ -48,7 +51,7 @@ public:
     void render(sf::RenderTarget* target = nullptr);
     void updateInput(const float& dt);
     void updateView(const float& dt);
-
     void updateTileMap(const float& dt);
+    void updatePlayerGUI(const float& dt);
 };
 
