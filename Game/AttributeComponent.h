@@ -36,8 +36,9 @@ public:
 	void updateLVL();
 	void update();
 
-	void debugPrint() const;
-
-	void getXp(const int xp);
+	void loseHP(const int hp);
+	void loseXP(const int xp);
+	void getHP(const int hp);
+	void getXP(const int xp);
 };
 

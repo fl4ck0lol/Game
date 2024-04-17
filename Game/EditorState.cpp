@@ -17,6 +17,7 @@ void EditorState::InitialiseVars()
 	this->pressOnce = 0;
 	this->showSidebar = 0;
 	this->showTextureSelector = 0;
+	this->tileLock = 0;
 }
 
 void EditorState::InitialiseKeyBinds()
@@ -86,7 +87,7 @@ void EditorState::InitialisePauseMenu()
 
 void EditorState::InitialiseTileMap()
 {
-	this->tileMap = new TileMap(this->stateData->gridSize, 100, 100, "Resources/tilesheet1.png");	
+	this->tileMap = new TileMap(this->stateData->gridSize, 100, 100, "Resources/tilesheet3.png");	
 	this->tileMap->loadFromFile("Resources/map.txt");
 }
 
@@ -257,6 +258,23 @@ void EditorState::updateInput(const float& dt)
 	{
 		this->mainView.move(this->cameraSpeed * dt, 0.f);
 	}
+
+	//lock
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("LOCK"))) && this->lastState == 0)
+	{
+		this->lastState = 6;
+	}
+
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("LOCK"))) && this->lastState == 6)
+	{
+		if (this->tileLock == 0)
+			this->tileLock = 1;
+		else
+			this->tileLock = 0;
+
+		this->lastState = 0;
+	}
+
 }
 
 void EditorState::update(const float& dt)
@@ -357,7 +375,8 @@ void EditorState::updateGUI()
 		<< mousePositionGrid.y
 		<< "\ncollision: " << this->collision
 		<< "\ntype: " << this->type
-		<< "\nnum of Tiels: " << this->tileMap->getTileAmount(mousePositionGrid.x, mousePositionGrid.y, this->layer);
+		<< "\nnum of Tiles: " << this->tileMap->getTileAmount(mousePositionGrid.x, mousePositionGrid.y, this->layer)
+		<< "\nlock: " << this->tileLock;
 	this->cursorText.setString(ss.str());
 	this->cursorText.setPosition(this->mousePositionView.x - 100.f, this->mousePositionView.y - 30);
 

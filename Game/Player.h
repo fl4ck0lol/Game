@@ -7,7 +7,7 @@ public:
     Player(sf::Texture& texture, float x, float y);
     ~Player();
 
-    void update(const float& dt);
+    void update(const float& dt, sf::Vector2f& mousePos);
     void render(sf::RenderTarget& target, sf::Shader* shader = nullptr, const bool showHitbox = false);
 
     AttributeComponent* getAtrComp();
@@ -19,6 +19,8 @@ public:
 
 private:
 
+    sf::Sprite weaponSprite;
+    sf::Texture weaponTexture;
     bool attacking;
     void InitialiseVariables();
 

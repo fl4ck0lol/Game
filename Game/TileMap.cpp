@@ -79,25 +79,25 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i& gridPos, sf::
 
 		this->layer = 0;
 
-		this->fromX = gridPos.x - 15;
+		this->fromX = gridPos.x - 14;
 		if (this->fromX < 0)
 			this->fromX = 0;
 		if (this->fromX >= this->maxSize.x)
 			this->fromX = this->maxSize.x;
 
-		this->toX = gridPos.x + 16;
+		this->toX = gridPos.x + 15;
 		if (this->toX < 0)
 			this->toX = 0;
 		if (this->toX >= this->maxSize.x)
 			this->toX = this->maxSize.x;
 
-		this->fromY = gridPos.y - 9;
+		this->fromY = gridPos.y - 8;
 		if (this->fromY < 0)
 			this->fromY = 0;
 		if (this->fromY >= this->maxSize.y)
 			this->fromY = this->maxSize.y;
 
-		this->toY = gridPos.y + 11;
+		this->toY = gridPos.y + 9;
 		if (this->toY < 0)
 			this->toY = 0;
 		if (this->toY >= this->maxSize.y)
@@ -409,4 +409,14 @@ void TileMap::renderDeferred(sf::RenderTarget& target, const sf::Vector2f player
 
 		deferredStack.pop();
 	}
+}
+
+const sf::Vector2i& TileMap::getMaxSizeGrid() const
+{
+	return this->maxSize;
+}
+
+const sf::Vector2f& TileMap::getMaxSizeF() const
+{
+	return this->maxSizeWorld;
 }

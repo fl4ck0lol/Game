@@ -33,7 +33,7 @@ void Entity::move(const float directionX, const float directionY, const float& d
 		this->movementComponent->Move(directionX, directionY, dt);		
 }
 
-void Entity::update(const float& dt)
+void Entity::update(const float& dt, sf::Vector2f& mousePos)
 {
 	
 }
@@ -131,4 +131,3 @@ void Entity::stopVelocityY()
 	if (this->movementComponent)
 		this->movementComponent->stopVelocityY();
 }
-

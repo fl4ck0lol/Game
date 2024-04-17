@@ -28,7 +28,7 @@ public:
 	void setTexture(sf::Texture& texture);
 
 	virtual void move(const float x, const float y, const float& dt);
-	virtual void update(const float& dt) = 0;
+	virtual void update(const float& dt, sf::Vector2f& mousePos) = 0;
 	virtual void render(sf::RenderTarget& target, sf::Shader* shader = nullptr, const bool showHitbox = false) = 0;
 	virtual void setPosition(const float x, const float y);
 

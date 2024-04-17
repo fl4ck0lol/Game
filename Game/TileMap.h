@@ -22,6 +22,7 @@ private:
 	void clear();
 
 	sf::Vector2f maxSizeWorld;
+	sf::Vector2i maxSizeWorldGrid;
 
 	std::stack<Tile*> deferredStack;
 
@@ -56,5 +57,8 @@ public:
 	const int getTileAmount(const int x, const int y, const int layer) const;
 
 	void renderDeferred(sf::RenderTarget& target, const sf::Vector2f gridPos = sf::Vector2f(), sf::Shader* shader = nullptr);
+
+	const sf::Vector2i& getMaxSizeGrid() const;
+	const sf::Vector2f& getMaxSizeF() const;
 };
 

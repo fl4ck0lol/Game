@@ -24,6 +24,7 @@ private:
 
     bool showSidebar;
     bool showTextureSelector;
+    bool tileLock;
 
     sf::Text cursorText;
 

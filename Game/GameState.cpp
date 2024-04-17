@@ -64,7 +64,7 @@ void GameState::update(const float& dt)
 		this->updateView(dt);
 		this->updatePlayerInput(dt);
 		this->updateTileMap(dt);
-		this->player->update(dt);
+		this->player->update(dt, this->mousePositionView);
 		this->playerGUI->update(dt);
 	}
 	else
@@ -89,7 +89,7 @@ void GameState::render(sf::RenderTarget* target)
 
 	this->renderTexture.setView(this->view);
 
-	this->tileMap->render(this->renderTexture, this->player->getGridPos(static_cast<int>(this->stateData->gridSize)), &this->coreShader, false, this->player->getPlayerCenter());
+	this->tileMap->render(this->renderTexture, this->viewGridPos, &this->coreShader, false, this->player->getPlayerCenter());
 
 	this->player->render(this->renderTexture, &this->coreShader);
 
@@ -124,7 +124,7 @@ void GameState::InitialiseTextures()
 
 void GameState::InitialisePlayers()
 {
-	this->player = new Player(this->textures["player_state_idle"], 0, 0);
+	this->player = new Player(this->textures["player_state_idle"], 100, 100);
 }
 
 void GameState::updateInput(const float& dt)
@@ -161,9 +161,12 @@ void GameState::updateView(const float& dt)
 {
 
 	this->view.setCenter(
-		std::floor(this->player->getPosition().x + (static_cast<float>(this->mousePositionWindow.x) - static_cast<float>(this->stateData->gSettings->resolution.width / 2)) / 5.f),
-		std::floor(this->player->getPosition().y + (static_cast<float>(this->mousePositionWindow.y) - static_cast<float>(this->stateData->gSettings->resolution.height / 2)) / 5.f)
+		std::floor(this->player->getPosition().x + (static_cast<float>(this->mousePositionWindow.x) - static_cast<float>(this->stateData->gSettings->resolution.width / 2)) / 10.f),
+		std::floor(this->player->getPosition().y + (static_cast<float>(this->mousePositionWindow.y) - static_cast<float>(this->stateData->gSettings->resolution.height / 2)) / 10.f)
 	);
+
+	this->viewGridPos.x = static_cast<int>(this->view.getCenter().x) / static_cast<int>(this->stateData->gridSize);
+	this->viewGridPos.y = static_cast<int>(this->view.getCenter().y) / static_cast<int>(this->stateData->gridSize);
 }
 
 void GameState::updateTileMap(const float& dt)
@@ -194,7 +197,7 @@ void GameState::InitialisePauseMenu()
 
 void GameState::InitialiseTileMap()
 {
-	this->tileMap = new TileMap(this->stateData->gridSize, 100, 100, "Resources/tilesheet1.png");
+	this->tileMap = new TileMap(this->stateData->gridSize, 100, 100, "Resources/tilesheet3.png");
 	this->tileMap->loadFromFile("Resources/map.txt");
 }
 

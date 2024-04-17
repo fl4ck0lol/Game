@@ -18,16 +18,22 @@ Player::Player(sf::Texture& textureSheet, float x, float y)
 	this->animationComponent->addAnimation("WALK_RIGHT", 11.f, 8, 1, 11, 1, 64, 64);
 	this->animationComponent->addAnimation("WALK_UP", 11.f, 12, 1, 15, 1, 64, 64);
 	this->animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 64, 64);
+
+	
+	this->weaponTexture.loadFromFile("Resources/sword.png");
+	this->weaponSprite.setTexture(weaponTexture);
+
+	this->weaponSprite.setOrigin(this->weaponSprite.getGlobalBounds().width / 2.f, this->weaponSprite.getGlobalBounds().height);
 }
 
 Player::~Player()
 {
 }
 
-void Player::update(const float& dt)
+void Player::update(const float& dt, sf::Vector2f& mousePos)
 {
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
-		this->attributeComponent->getXp(20);
+		this->attributeComponent->getXP(20);
 
 	this->movementComponent->Update(dt);
 
@@ -36,6 +42,16 @@ void Player::update(const float& dt)
 	this->updateAnimation(dt);
 
 	this->hitboxComponent->update();
+
+	this->weaponSprite.setPosition(this->getPlayerCenter().x, this->getPlayerCenter().y);
+
+	float dx = mousePos.x - this->weaponSprite.getPosition().x;
+	float dy = mousePos.y - this->weaponSprite.getPosition().y;
+
+	const float pi = 3.14159265;
+	float deg = atan2(dy, dx) * 180 / pi;
+
+	this->weaponSprite.setRotation(deg + 90.f);
 }
 
 void Player::render(sf::RenderTarget& target, sf::Shader* shader, const bool showHitbox)
@@ -46,9 +62,16 @@ void Player::render(sf::RenderTarget& target, sf::Shader* shader, const bool sho
 		shader->setUniform("lightPos", this->getPlayerCenter());
 
 		target.draw(this->sprite, shader);
+
+
+		target.draw(this->weaponSprite);
 	}
 	else
+	{
 		target.draw(this->sprite);
+
+		target.draw(this->weaponSprite);
+	}
 
 	if(showHitbox)
 		this->hitboxComponent->render(target);
@@ -109,26 +132,20 @@ void Player::updateAnimation(const float& dt)
 
 void Player::loseHP(const int hp)
 {
-	this->attributeComponent->HP -= hp;
-	if (this->attributeComponent->HP < 0)
-		this->attributeComponent->HP = 0;
+	this->attributeComponent->loseHP(hp);
 }
 
 void Player::loseXP(const int xp)
 {
-	this->attributeComponent->xp -= xp;
-	if (this->attributeComponent->xp < 0)
-		this->attributeComponent->xp = 0;
+	this->attributeComponent->loseXP(xp);
 }
 
 void Player::gainHP(const int hp)
 {
-	this->attributeComponent->HP += hp;
-	if (this->attributeComponent->HP > this->attributeComponent->maxHP)
-		this->attributeComponent->HP = this->attributeComponent->maxHP;
+	this->attributeComponent->getHP(hp);
 }
 
 void Player::gainXP(const int xp)
 {
-	this->attributeComponent->getXp(xp);
+	this->attributeComponent->getXP(xp);
 }

@@ -51,7 +51,30 @@ void AttributeComponent::update()
 	this->updateLVL();
 }
 
-void AttributeComponent::getXp(const int xp)
+void AttributeComponent::loseHP(const int hp)
+{
+	this->HP -= hp;
+	if (this->HP < 0)
+		this->HP = 0;
+}
+
+void AttributeComponent::loseXP(const int xp)
+{
+	this->xp -= xp;
+	if (this->xp < 0)
+		this->xp = 0;
+}
+
+void AttributeComponent::getHP(const int hp)
+{
+	this->HP += hp;
+	if (this->HP > this->maxHP)
+		this->HP = this->maxHP;
+}
+
+
+
+void AttributeComponent::getXP(const int xp)
 {
 	this->xp += xp;
 
