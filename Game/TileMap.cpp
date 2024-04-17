@@ -74,31 +74,30 @@ void TileMap::update()
 
 }
 
-void TileMap::render(sf::RenderTarget& target, const sf::Vector2i* gridPos)
+void TileMap::render(sf::RenderTarget& target, const sf::Vector2i& gridPos, sf::Shader* shader, const bool showCollision, const sf::Vector2f playerPos)
 {
-	if (gridPos)
-	{
+
 		this->layer = 0;
 
-		this->fromX = gridPos->x - 3;
+		this->fromX = gridPos.x - 15;
 		if (this->fromX < 0)
 			this->fromX = 0;
 		if (this->fromX >= this->maxSize.x)
 			this->fromX = this->maxSize.x;
 
-		this->toX = gridPos->x + 5;
+		this->toX = gridPos.x + 16;
 		if (this->toX < 0)
 			this->toX = 0;
 		if (this->toX >= this->maxSize.x)
 			this->toX = this->maxSize.x;
 
-		this->fromY = gridPos->y - 3;
+		this->fromY = gridPos.y - 9;
 		if (this->fromY < 0)
 			this->fromY = 0;
 		if (this->fromY >= this->maxSize.y)
 			this->fromY = this->maxSize.y;
 
-		this->toY = gridPos->y + 5;
+		this->toY = gridPos.y + 11;
 		if (this->toY < 0)
 			this->toY = 0;
 		if (this->toY >= this->maxSize.y)
@@ -115,41 +114,26 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i* gridPos)
 						this->deferredStack.push(this->map[x][y][this->layer][k]);
 					}
 					else
-						this->map[x][y][this->layer][k]->render(target);
-					if (this->map[x][y][this->layer][k]->getCollision())
 					{
-						this->collisionBox.setPosition(this->map[x][y][this->layer][k]->getPosition());
-						target.draw(this->collisionBox);
+						if (shader)
+							this->map[x][y][this->layer][k]->render(target, playerPos, shader);
+						else
+							this->map[x][y][this->layer][k]->render(target);
 					}
-				}
 
-			}
-
-		}
-	}
-	else
-	{
-		for (auto& x : this->map)
-		{
-			for (auto& y : x)
-			{
-				for (auto& z : y)
-				{
-					for (auto* k : z)
+					if (showCollision)
 					{
-						k->render(target);
-						if (k->getCollision())
+						if (this->map[x][y][this->layer][k]->getCollision())
 						{
-							this->collisionBox.setPosition(k->getPosition());
+							this->collisionBox.setPosition(this->map[x][y][this->layer][k]->getPosition());
 							target.draw(this->collisionBox);
 						}
 					}
-
 				}
-			}
-		}
-	}
 
+			}
+
+		}
 }
 
 void TileMap::AddTile(const int x, const int y, const int z, const sf::IntRect& rect, const bool collision, const short type)
@@ -236,7 +220,7 @@ void TileMap::loadFromFile(const std::string path)
 
 	if (inFile.is_open())
 	{
-		sf::Vector2u size;
+		sf::Vector2i size;
 		unsigned gridSize = 0;	
 		unsigned layers = 0;
 		std::string fileName = "";
@@ -414,11 +398,15 @@ const int TileMap::getTileAmount(const int x, const int y, const int layer) cons
 	return 0;
 }
 
-void TileMap::renderDeferred(sf::RenderTarget& target)
+void TileMap::renderDeferred(sf::RenderTarget& target, const sf::Vector2f playerPos, sf::Shader* shader)
 {
 	while (!this->deferredStack.empty())
 	{
-		this->deferredStack.top()->render(target);
-		this->deferredStack.pop();
+		if (shader)
+			deferredStack.top()->render(target, playerPos, shader);
+		else
+			deferredStack.top()->render(target);
+
+		deferredStack.pop();
 	}
 }

@@ -41,7 +41,7 @@ public:
 	virtual ~TileMap();
 
 	void update();
-	void render(sf::RenderTarget& target, const sf::Vector2i* gridPos = nullptr);
+	void render(sf::RenderTarget& target, const sf::Vector2i& gridPos, sf::Shader* shader = nullptr, const bool showCollision = false, const sf::Vector2f playerPos = sf::Vector2f());
 
 	void AddTile(const int x, const int y, const int z, const sf::IntRect& rect, const bool collision, const short type);
 	void RemoveTile(const int x, const int y, const int z);
@@ -55,6 +55,6 @@ public:
 
 	const int getTileAmount(const int x, const int y, const int layer) const;
 
-	void renderDeferred(sf::RenderTarget& target);
+	void renderDeferred(sf::RenderTarget& target, const sf::Vector2f gridPos = sf::Vector2f(), sf::Shader* shader = nullptr);
 };
 

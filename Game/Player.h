@@ -8,7 +8,7 @@ public:
     ~Player();
 
     void update(const float& dt);
-    void render(sf::RenderTarget& target);
+    void render(sf::RenderTarget& target, sf::Shader* shader = nullptr, const bool showHitbox = false);
 
     AttributeComponent* getAtrComp();
 

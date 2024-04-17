@@ -23,6 +23,8 @@ private:
     sf::RenderTexture renderTexture;
     sf::Sprite renderSprite;
 
+    sf::Shader coreShader;
+
     PauseMenu* pausemenu;
     Player* player;
     PlayerGUI* playerGUI;
@@ -40,6 +42,7 @@ private:
     void InitialiseTileMap();
     void InitialiseRender();
     void InitialisePlayerGUI();
+    void InitialiseShaders();
 
 public:
     GameState(StateData* stateData);

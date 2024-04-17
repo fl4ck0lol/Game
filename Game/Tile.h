@@ -4,7 +4,7 @@ enum Tile_types{DEFAULT = 0, DAMAGING, DOODAD};
 class Tile
 {
 protected:
-	sf::RectangleShape tileShape;
+	sf::Sprite tileShape;
 	bool collision;
 	short unsigned type;
 
@@ -15,7 +15,7 @@ public:
 	virtual ~Tile();
 
 	void update();
-	void render(sf::RenderTarget& target);
+	void render(sf::RenderTarget& target, const sf::Vector2f playerPos = sf::Vector2f(), sf::Shader* shader = nullptr);
 
 	const std::string getAsString() const;
 

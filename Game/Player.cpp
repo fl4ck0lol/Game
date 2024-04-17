@@ -12,9 +12,12 @@ Player::Player(sf::Texture& textureSheet, float x, float y)
 	this->InitialiseHitboxComp(this->sprite, 10.f, 5.f, 40.f, 50.f);
 	this->InitialiseAttributeComp(1);
 
-	this->animationComponent->addAnimation("IDLE", 11.f, 0, 4, 5, 4, 64, 64);
-	this->animationComponent->addAnimation("WALK", 7.f, 0, 3, 7, 3, 64, 64);
-	this->animationComponent->addAnimation("ATTACK", 7.f, 0, 8, 7, 8, 64, 64);
+	this->animationComponent->addAnimation("IDLE", 15.f, 0, 0, 8, 0, 64, 64);
+	this->animationComponent->addAnimation("WALK_DOWN", 11.f, 0, 1, 3, 1, 64, 64);
+	this->animationComponent->addAnimation("WALK_LEFT", 11.f, 4, 1, 7, 1, 64, 64);
+	this->animationComponent->addAnimation("WALK_RIGHT", 11.f, 8, 1, 11, 1, 64, 64);
+	this->animationComponent->addAnimation("WALK_UP", 11.f, 12, 1, 15, 1, 64, 64);
+	this->animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 64, 64);
 }
 
 Player::~Player()
@@ -32,14 +35,23 @@ void Player::update(const float& dt)
 
 	this->updateAnimation(dt);
 
-	this->hitboxComponenet->update();
+	this->hitboxComponent->update();
 }
 
-void Player::render(sf::RenderTarget& target)
+void Player::render(sf::RenderTarget& target, sf::Shader* shader, const bool showHitbox)
 {
-	target.draw(this->sprite);
+	if (shader)
+	{
+		shader->setUniform("hasTexture", true);
+		shader->setUniform("lightPos", this->getPlayerCenter());
 
-	this->hitboxComponenet->render(target);
+		target.draw(this->sprite, shader);
+	}
+	else
+		target.draw(this->sprite);
+
+	if(showHitbox)
+		this->hitboxComponent->render(target);
 }
 
 AttributeComponent* Player::getAtrComp()
@@ -69,27 +81,29 @@ void Player::updateAttack(const float& dt)
 
 void Player::updateAnimation(const float& dt)
 {
-	if (this->movementComponent->getMoveState(IDLE))
-		this->animationComponent->play("IDLE", dt);
-	else if (this->movementComponent->getMoveState(RIGHT))
+	if (this->attacking)
 	{
-		this->sprite.setOrigin(0.f, 0.f);
-		this->sprite.setScale(1.f, 1.f);
-		this->animationComponent->play("WALK", dt, this->movementComponent->getVelocity().x, this->movementComponent->getMaxVelocity());
+
+	}
+	if (this->movementComponent->getMoveState(IDLE))
+	{
+		this->animationComponent->play("IDLE", dt);
 	}
 	else if (this->movementComponent->getMoveState(LEFT))
 	{
-		this->sprite.setOrigin(this->sprite.getGlobalBounds().width, 0.f);
-		this->sprite.setScale(-1.f, 1.f);
-		this->animationComponent->play("WALK", dt, this->movementComponent->getVelocity().x, this->movementComponent->getMaxVelocity());
+		this->animationComponent->play("WALK_LEFT", dt, this->movementComponent->getVelocity().x, this->movementComponent->getMaxVelocity());
+	}
+	else if (this->movementComponent->getMoveState(RIGHT))
+	{
+		this->animationComponent->play("WALK_RIGHT", dt, this->movementComponent->getVelocity().x, this->movementComponent->getMaxVelocity());
 	}
 	else if (this->movementComponent->getMoveState(UP))
 	{
-		this->animationComponent->play("WALK", dt, this->movementComponent->getVelocity().y, this->movementComponent->getMaxVelocity());
+		this->animationComponent->play("WALK_UP", dt, this->movementComponent->getVelocity().y, this->movementComponent->getMaxVelocity());
 	}
 	else if (this->movementComponent->getMoveState(DOWN))
 	{
-		this->animationComponent->play("WALK", dt, this->movementComponent->getVelocity().y, this->movementComponent->getMaxVelocity());
+		this->animationComponent->play("WALK_DOWN", dt, this->movementComponent->getVelocity().y, this->movementComponent->getMaxVelocity());
 	}
 }
 

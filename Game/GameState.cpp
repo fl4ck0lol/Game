@@ -28,6 +28,7 @@ GameState::GameState(StateData* stateData)
 	this->InitialisePlayers();
 	this->InitialiseFonts();
 	this->InitialisePauseMenu();
+	this->InitialiseShaders();
 	this->InitialiseTileMap();
 	this->InitialiseRender();
 	this->InitialisePlayerGUI();
@@ -81,17 +82,18 @@ void GameState::updatePauseMenuButtons()
 
 void GameState::render(sf::RenderTarget* target)
 {
+
 	if (!target)
 		target = this->window;
 	this->renderTexture.clear();
 
 	this->renderTexture.setView(this->view);
 
-	this->tileMap->render(this->renderTexture, &this->player->getGridPos(static_cast<int>(this->stateData->gridSize)));
+	this->tileMap->render(this->renderTexture, this->player->getGridPos(static_cast<int>(this->stateData->gridSize)), &this->coreShader, false, this->player->getPlayerCenter());
 
-	this->player->render(this->renderTexture);
+	this->player->render(this->renderTexture, &this->coreShader);
 
-	this->tileMap->renderDeferred(this->renderTexture);
+	this->tileMap->renderDeferred(this->renderTexture, this->player->getPlayerCenter(), &this->coreShader);
 
 	this->renderTexture.setView(this->renderTexture.getDefaultView());
 	this->playerGUI->render(this->renderTexture);
@@ -116,7 +118,7 @@ void GameState::InitialiseView()
 void GameState::InitialiseTextures()
 {
 
-	if(!this->textures["player_state_idle"].loadFromFile("Resources/player/AnimationSheet_Character1.png"))
+	if(!this->textures["player_state_idle"].loadFromFile("Resources/player/PLAYER_SHEET2.png"))
 		throw "ERRORR GameState player texture doesnt load";
 }
 
@@ -207,4 +209,10 @@ void GameState::InitialisePlayerGUI()
 {
 	sf::VideoMode& vm = this->stateData->gSettings->resolution;
 	this->playerGUI = new PlayerGUI(this->player, vm);
+}
+
+void GameState::InitialiseShaders()
+{
+	if (!this->coreShader.loadFromFile("vertex_shader.vert", "fragment_shader.frag"))
+		std::cout << "shader didnt load \n";
 }

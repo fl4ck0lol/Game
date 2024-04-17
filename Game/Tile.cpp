@@ -9,10 +9,8 @@ Tile::Tile()
 
 Tile::Tile(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision, short type)
 {
-	this->tileShape.setSize(sf::Vector2f(gridSizeF, gridSizeF));
-	this->tileShape.setFillColor(sf::Color::White);
 	this->tileShape.setPosition(static_cast<float>(x) * gridSizeF, static_cast<float>(y) * gridSizeF);
-	this->tileShape.setTexture(texture);
+	this->tileShape.setTexture(*texture);
 	this->tileShape.setTextureRect(rect);
 
 	this->collision = collision;
@@ -29,9 +27,17 @@ void Tile::update()
 
 }
 
-void Tile::render(sf::RenderTarget& target)
+void Tile::render(sf::RenderTarget& target, const sf::Vector2f playerPos, sf::Shader* shader)
 {
-	target.draw(this->tileShape);
+	if (shader)
+	{
+		shader->setUniform("hasTexture", true);
+		shader->setUniform("lightPos", playerPos);
+
+		target.draw(this->tileShape, shader);
+	}
+	else
+		target.draw(this->tileShape);
 }
 
 const std::string Tile::getAsString() const

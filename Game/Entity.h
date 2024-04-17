@@ -17,7 +17,7 @@ protected:
 
 	MovementComponent* movementComponent;
 	AnimationComponent* animationComponent;
-	HitboxComponent* hitboxComponenet;
+	HitboxComponent* hitboxComponent;
 	AttributeComponent* attributeComponent;
 
 public:
@@ -29,7 +29,7 @@ public:
 
 	virtual void move(const float x, const float y, const float& dt);
 	virtual void update(const float& dt) = 0;
-	virtual void render(sf::RenderTarget& target) = 0;
+	virtual void render(sf::RenderTarget& target, sf::Shader* shader = nullptr, const bool showHitbox = false) = 0;
 	virtual void setPosition(const float x, const float y);
 
 	void InitialiseAnimComp(sf::Texture& textureSheet);
@@ -38,7 +38,8 @@ public:
 	void InitialiseAttributeComp(const unsigned lvl);
 
 	virtual const sf::Vector2f& getPosition() const;
-	virtual const sf::Vector2i& getGridPos(const int gridSizei) const;
+	virtual const sf::Vector2f getPlayerCenter() const;
+	virtual const sf::Vector2i getGridPos(const int gridSizei) const;
 	virtual const sf::FloatRect getGlobalBounds() const;
 	virtual const sf::FloatRect getNextPosBounds(const float& dt) const;
 

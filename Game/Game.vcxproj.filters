@@ -31,6 +31,9 @@
     <Filter Include="map">
       <UniqueIdentifier>{311e21ba-327a-435b-ab15-5e2177f66275}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{8c5b4e72-5735-48c6-9cfb-535824086121}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -152,5 +155,13 @@
     <ClInclude Include="PlayerGUI.h">
       <Filter>GUI</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment_shader.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="vertex_shader.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

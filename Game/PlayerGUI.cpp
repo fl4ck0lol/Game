@@ -24,7 +24,7 @@ void PlayerGUI::InitHpBar()
 	this->hpBarCont.setPosition(this->hpBarBg.getPosition());
 
 	this->hpBarText.setFont(this->font);
-	this->hpBarText.setCharacterSize(GUI::calcCharSize(vm) - 20);
+	this->hpBarText.setCharacterSize(GUI::calcCharSize(vm) - 10);
 }
 
 void PlayerGUI::InitXpBar()
@@ -44,7 +44,7 @@ void PlayerGUI::InitXpBar()
 	this->xpBarCont.setPosition(this->xpBarBg.getPosition());
 
 	this->xpBarText.setFont(this->font);
-	this->xpBarText.setCharacterSize(30);
+	this->xpBarText.setCharacterSize(GUI::calcCharSize(this->vm) - 10);
 }
 
 void PlayerGUI::InitLevelBar()
@@ -61,7 +61,7 @@ void PlayerGUI::InitLevelBar()
 
 
 	this->lvlBarText.setFont(this->font);
-	this->lvlBarText.setCharacterSize(30);
+	this->lvlBarText.setCharacterSize(GUI::calcCharSize(this->vm) - 10);
 }
 
 PlayerGUI::PlayerGUI(Player* player, sf::VideoMode& vmode) : vm(vmode)

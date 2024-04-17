@@ -281,12 +281,13 @@ void EditorState::update(const float& dt)
 
 void EditorState::render(sf::RenderTarget* target)
 {
+
 	if (!target)
 		target = this->window;
 
 	target->setView(this->mainView);
 
-	this->tileMap->render(*target);
+	this->tileMap->render(*target, this->mousePositionGrid, nullptr, true);
 	this->tileMap->renderDeferred(*target);
 
 	target->setView(this->window->getDefaultView());
