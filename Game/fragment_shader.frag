@@ -1,4 +1,4 @@
-varying in vec4 vert_pos;
+in vec4 vert_pos;
 
 uniform sampler2D texture;
 uniform bool hasTexture;
@@ -25,4 +25,5 @@ void main()
 	{
 		gl_FragColor = gl_Color;
 	}
+
 }
