@@ -66,6 +66,7 @@ void Rat::InitialiseAnimations()
 	this->animationComponent->addAnimation("WALK_UP", 11.f, 0, 4, 3, 4, 60, 64);
 	this->animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 60, 64);
 
+
 }
 
 void Rat::updateAttack(const float& dt)
