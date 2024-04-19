@@ -24,7 +24,7 @@ Tile::~Tile()
 
 void Tile::update()
 {
-
+	
 }
 
 void Tile::render(sf::RenderTarget& target, const sf::Vector2f playerPos, sf::Shader* shader)
@@ -72,4 +72,14 @@ const bool Tile::intersects(const sf::FloatRect bounds) const
 const short& Tile::getType() const
 {
 	return this->type;
+}
+
+const bool Tile::SpawnerType() const
+{
+	if (this->type == ENEMYSPAWNER)
+	{
+		return true;
+	} 
+	else
+		return false;
 }

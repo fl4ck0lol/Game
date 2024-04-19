@@ -94,4 +94,27 @@ namespace GUI {
 	const float PixelPercentX(const float perc, const sf::VideoMode& vm);
 	const float PixelPercentY(const float perc, const sf::VideoMode& vm);
 	const unsigned calcCharSize(const sf::VideoMode& vm);
+
+	class ProgressBar
+	{
+	private:
+		std::string barStr;
+		sf::Text text;
+		sf::Font font;
+		float barMaxWidth;
+		int maxValue;
+		sf::RectangleShape back;
+		sf::RectangleShape front;
+
+		sf::VideoMode vm;
+
+		sf::Color color;
+
+	public:
+		ProgressBar(float x, float y, float width, float height, int maxValue, sf::Color* color, sf::Font* font = nullptr, sf::VideoMode* vm = nullptr);
+		virtual ~ProgressBar();
+
+		void update(const int currentValue);
+		void render(sf::RenderTarget& target);
+	};
 }

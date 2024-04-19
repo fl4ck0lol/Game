@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.h"
 #include "Entity.h"
+#include "EnemySpawner.h"
 
 class Tile;
 class Entity;
@@ -18,6 +19,7 @@ private:
 	sf::Texture tileTexture;
 
 	sf::RectangleShape collisionBox;
+	sf::RectangleShape Spawner;
 
 	void clear();
 
@@ -39,9 +41,11 @@ protected:
 public:
 
 	TileMap(float gridSize, int width, int height, std::string fileName);
+
+	TileMap(const std::string path);
+
 	virtual ~TileMap();
 
-	void update();
 	void render(sf::RenderTarget& target, const sf::Vector2i& gridPos, sf::Shader* shader = nullptr, const bool showCollision = false, const sf::Vector2f playerPos = sf::Vector2f());
 
 	void AddTile(const int x, const int y, const int z, const sf::IntRect& rect, const bool collision, const short type);
@@ -52,7 +56,7 @@ public:
 	void saveToFile(const std::string path);
 	void loadFromFile(const std::string path);
 
-	void updateCollision(Entity* entity, const float& dt);
+	void update(Entity* entity, const float& dt);
 
 	const int getTileAmount(const int x, const int y, const int layer) const;
 
@@ -60,5 +64,7 @@ public:
 
 	const sf::Vector2i& getMaxSizeGrid() const;
 	const sf::Vector2f& getMaxSizeF() const;
+
+	const bool tileEmpty(const int x, const int y, const int z) const;
 };
 

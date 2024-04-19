@@ -3,26 +3,29 @@
 
 void TileMap::clear()
 {
-	for (int x = 0; x < this->maxSize.x; x++)
+	if (!this->map.empty())
 	{
-		for (int y = 0; y < this->maxSize.y; y++)
+
+		for (int x = 0; x < this->maxSize.x; x++)
 		{
-			for (int z = 0; z < this->layers; z++)
+			for (int y = 0; y < this->maxSize.y; y++)
 			{
-				for (int k = 0; k < this->map[x][y][z].size(); k++)
+				for (int z = 0; z < this->layers; z++)
 				{
-					delete this->map[x][y][z][k];
-					this->map[x][y][z][k] = nullptr;
+					for (int k = 0; k < this->map[x][y][z].size(); k++)
+					{
+						delete this->map[x][y][z][k];
+						this->map[x][y][z][k] = nullptr;
+					}
+					this->map[x][y][z].clear();
 				}
-				this->map[x][y][z].clear();
+				this->map[x][y].clear();
 			}
-			this->map[x][y].clear();
+			this->map[x].clear();
 		}
-		this->map[x].clear();
+
+		this->map.clear();
 	}
-
-	this->map.clear();
-
 }
 
 TileMap::TileMap(float gridSize, int width, int height, std::string fileName)
@@ -62,16 +65,31 @@ TileMap::TileMap(float gridSize, int width, int height, std::string fileName)
 
 	this->collisionBox.setSize(sf::Vector2f(gridSize, gridSize));
 	this->collisionBox.setFillColor(sf::Color(255, 0, 0, 50));
+
+	this->Spawner.setSize(sf::Vector2f(this->gridSizeF, this->gridSizeF));
+	this->Spawner.setFillColor(sf::Color(0, 0, 255, 50));
+}
+
+TileMap::TileMap(const std::string path)
+{
+	this->fromX = 0;
+	this->toX = 0;
+	this->fromY = 0;
+	this->toY = 0;
+	this->layer = 0;
+
+	this->loadFromFile(path);
+
+	this->collisionBox.setSize(sf::Vector2f(this->gridSizeF, this->gridSizeF));
+	this->collisionBox.setFillColor(sf::Color(255, 0, 0, 50));
+
+	this->Spawner.setSize(sf::Vector2f(this->gridSizeF, this->gridSizeF));
+	this->Spawner.setFillColor(sf::Color(0, 0, 255, 50));
 }
 
 TileMap::~TileMap()
 {
 	this->clear();
-}
-
-void TileMap::update()
-{
-
 }
 
 void TileMap::render(sf::RenderTarget& target, const sf::Vector2i& gridPos, sf::Shader* shader, const bool showCollision, const sf::Vector2f playerPos)
@@ -119,6 +137,14 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i& gridPos, sf::
 							this->map[x][y][this->layer][k]->render(target, playerPos, shader);
 						else
 							this->map[x][y][this->layer][k]->render(target);
+
+						if (this->map[x][y][this->layer][k]->getType() == Tile_types::ENEMYSPAWNER)
+						{
+							if(shader)
+								this->map[x][y][this->layer][k]->render(target, playerPos, shader);
+							else
+								this->map[x][y][this->layer][k]->render(target);
+						}
 					}
 
 					if (showCollision)
@@ -128,6 +154,11 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i& gridPos, sf::
 							this->collisionBox.setPosition(this->map[x][y][this->layer][k]->getPosition());
 							target.draw(this->collisionBox);
 						}
+					}
+					if (this->map[x][y][this->layer][k]->SpawnerType())
+					{
+						this->Spawner.setPosition(this->map[x][y][this->layer][k]->getPosition());
+						target.draw(this->Spawner);
 					}
 				}
 
@@ -140,10 +171,18 @@ void TileMap::AddTile(const int x, const int y, const int z, const sf::IntRect& 
 {
 	if (x < this->maxSize.x && x >= 0 && y < this->maxSize.y && y >= 0 && z < this->layers && z >= 0)
 	{
-
-		this->map[x][y][z].push_back(new Tile(x, y, this->gridSizeF, &this->tileTexture, rect, collision, type));
-		std::cout << "added tile \n";
+		if (type == ENEMYSPAWNER)
+		{
+			this->map[x][y][z].push_back(new EnemySpawner(x, y, this->gridSizeF, &this->tileTexture, rect, collision, type));
+			std::cout << "added enemy spawner \n";
+		}
+		else
+		{
+			this->map[x][y][z].push_back(new Tile(x, y, this->gridSizeF, &this->tileTexture, rect, collision, type));
+			std::cout << "added tile \n";
+		}
 	}
+
 }
 
 void TileMap::RemoveTile(const int x, const int y, const int z)
@@ -264,7 +303,6 @@ void TileMap::loadFromFile(const std::string path)
 		{
 			this->map[x][y][z].push_back(new Tile
 			(x, y, this->gridSizeF, &this->tileTexture, sf::IntRect(trX, trY, this->gridSizeI, this->gridSizeI), collision, type));
-			std::cout << "tile loaded \n";
 		}
 	}
 	else
@@ -273,7 +311,7 @@ void TileMap::loadFromFile(const std::string path)
 	inFile.close();
 }
 
-void TileMap::updateCollision(Entity* entity, const float& dt)
+void TileMap::update(Entity* entity, const float& dt)
 {
 	if (entity->getPosition().x < 0.f)
 	{
@@ -331,6 +369,8 @@ void TileMap::updateCollision(Entity* entity, const float& dt)
 
 			for (int k = 0; k < map[x][y][this->layer].size(); k++)
 			{
+				this->map[x][y][this->layer][k]->update();
+
 				sf::FloatRect playerBounds = entity->getGlobalBounds();
 				sf::FloatRect wallBounds = map[x][y][this->layer][k]->getGlobalBounds();
 				sf::FloatRect nextPosBounds = entity->getNextPosBounds(dt);
@@ -420,3 +460,14 @@ const sf::Vector2f& TileMap::getMaxSizeF() const
 {
 	return this->maxSizeWorld;
 }
+
+const bool TileMap::tileEmpty(const int x, const int y, const int z) const
+{
+	if (x >= 0 && x < this->maxSize.x &&
+		y >= 0 && y < this->maxSize.y &&
+		z >= 0 && z <= this->layers)
+	{
+		return this->map[x][y][z].empty();
+	}
+}
+

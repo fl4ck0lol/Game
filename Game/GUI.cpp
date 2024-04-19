@@ -258,7 +258,6 @@ GUI::TextureSelector::TextureSelector(float x, float y, float width, float heigh
 
 }
 
-
 GUI::TextureSelector::~TextureSelector()
 {
 
@@ -312,3 +311,54 @@ const sf::IntRect& GUI::TextureSelector::getTextureRect() const
 	return this->textureRect;
 }
 
+
+// progress bar
+GUI::ProgressBar::ProgressBar(float x, float y, float width, float height, int maxValue, sf::Color* color, sf::Font* font, sf::VideoMode* vm)
+{
+	this->color = *color;
+	this->vm = *vm;
+	this->maxValue = maxValue;
+	this->barMaxWidth = width;
+
+	this->back.setSize(sf::Vector2f(width, height));
+	this->back.setFillColor(sf::Color(0, 0, 0, 50));
+	this->back.setPosition(x, y);
+	this->back.setOutlineThickness(1.f);
+	this->back.setOutlineColor(sf::Color(255, 255, 255, 200));
+
+	this->front.setSize(sf::Vector2f(width, height));
+	this->front.setFillColor(sf::Color(this->color));
+	this->front.setPosition(this->back.getPosition());
+
+	if (font)
+	{
+		this->font = *font;
+		this->text.setFont(this->font);
+		this->text.setCharacterSize(GUI::calcCharSize(*vm) - 10);
+	}
+
+}
+
+GUI::ProgressBar::~ProgressBar()
+{
+
+}
+
+void GUI::ProgressBar::update(const int currentValue)
+{
+	float percent = static_cast<float>(currentValue) / static_cast<float>(this->maxValue);
+
+	this->front.setSize(sf::Vector2f(static_cast<float>(std::floor(this->barMaxWidth * percent)), this->front.getSize().y));
+
+	this->barStr = std::to_string(currentValue) + " / " + std::to_string(maxValue);
+	this->text.setString(barStr);
+	this->text.setPosition(this->back.getPosition().x + (this->back.getSize().x / 2 - this->text.getGlobalBounds().width / 2),
+		this->back.getPosition().y + (this->back.getSize().y / 2 - this->text.getGlobalBounds().height / 1.5));
+}
+
+void GUI::ProgressBar::render(sf::RenderTarget& target)
+{
+	target.draw(this->back);
+	target.draw(this->front);
+	target.draw(this->text);
+}

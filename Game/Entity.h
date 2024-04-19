@@ -1,16 +1,15 @@
-	#pragma once
+#pragma once
 
 #include "MovementComponent.h"
 #include "AnimationComponent.h"
 #include "HitboxComponent.h"
 #include "AttributeComponent.h"
-
+#include "SkillComponent.h"
 
 class Entity
 {
 private:
 	void Variables();
-	
 
 protected:
 	sf::Sprite sprite;
@@ -19,6 +18,7 @@ protected:
 	AnimationComponent* animationComponent;
 	HitboxComponent* hitboxComponent;
 	AttributeComponent* attributeComponent;
+	SkillComponent* skillComponent;
 
 public:
 	Entity();
@@ -36,6 +36,7 @@ public:
 	void InitialiseMoveComp(const float MaxVelocity, const float acceleration, const float deceleration);
 	void InitialiseHitboxComp(sf::Sprite& sprite, const float offset_x, const float offset_y, const float width, const float height);
 	void InitialiseAttributeComp(const unsigned lvl);
+	void InitialiseSkillComp();
 
 	virtual const sf::Vector2f& getPosition() const;
 	virtual const sf::Vector2f getPlayerCenter() const;

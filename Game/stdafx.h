@@ -23,9 +23,6 @@
 #include<string>
 #include<cmath>
 
-
-
 class stdafx
 {
 };
-

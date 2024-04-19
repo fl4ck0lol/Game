@@ -7,6 +7,7 @@ void Entity::Variables()
 	this->animationComponent = NULL;
 	this->hitboxComponent = NULL;
 	this->attributeComponent = NULL;
+	this->skillComponent = NULL;
 }
 
 Entity::Entity()
@@ -20,6 +21,7 @@ Entity::~Entity()
 	delete this->animationComponent;
 	delete this->hitboxComponent;
 	delete this->attributeComponent;
+	delete this->skillComponent;
 }
 
 void Entity::setTexture(sf::Texture& texture)
@@ -30,7 +32,7 @@ void Entity::setTexture(sf::Texture& texture)
 void Entity::move(const float directionX, const float directionY, const float& dt)
 {
 	if (this->movementComponent)
-		this->movementComponent->Move(directionX, directionY, dt);		
+		this->movementComponent->Move(directionX, directionY, dt);	
 }
 
 void Entity::update(const float& dt, sf::Vector2f& mousePos)
@@ -70,6 +72,11 @@ void Entity::InitialiseHitboxComp(sf::Sprite& sprite, const float offset_x, cons
 void Entity::InitialiseAttributeComp(const unsigned lvl)
 {
 	this->attributeComponent = new AttributeComponent(lvl);
+}
+
+void Entity::InitialiseSkillComp()
+{
+	this->skillComponent = new SkillComponent();
 }
 
 const sf::Vector2f& Entity::getPosition() const

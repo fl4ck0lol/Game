@@ -1,4 +1,4 @@
-﻿	#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "EditorState.h"
 
 using namespace GUI;
@@ -406,30 +406,74 @@ void EditorState::renderGUI(sf::RenderTarget& target)
 
 void EditorState::updateTile(const float& dt)
 {
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pressOnce != 1)
+	if (!this->tileLock)
 	{
-		this->pressOnce = 1;
-	}
-	if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && pressOnce == 1)
-	{
-		this->pressOnce = 0;
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pressOnce != 1)
+		{
+			this->pressOnce = 1;
+		}
+		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && pressOnce == 1)
+		{
+			this->pressOnce = 0;
 
-		if (!this->textureSelector->getActive())
-			this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type);
+			if (!this->textureSelector->getActive())
+			{
+				if (this->tileLock)
+				{
+					if (this->tileMap->tileEmpty(this->mousePositionGrid.x, this->mousePositionGrid.y, 0))
+					{
+						this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type);
+					}
+				}
+				else
+				{
+					this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type);
+				}
+			}
+			else
+				this->textureRect = this->textureSelector->getTextureRect();
+		}
 
-		else
-			this->textureRect = this->textureSelector->getTextureRect();
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && pressOnce != 2)
+		{
+			this->pressOnce = 2;
+		}
+		if (!sf::Mouse::isButtonPressed(sf::Mouse::Right) && pressOnce == 2)
+		{
+			this->pressOnce = 0;
+			if (!this->textureSelector->getActive())
+				this->tileMap->RemoveTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0);
+		}
 	}
+	else
+	{
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) )
+		{
+			if (!this->textureSelector->getActive())
+			{
+				if (this->tileLock)
+				{
+					if (this->tileMap->tileEmpty(this->mousePositionGrid.x, this->mousePositionGrid.y, 0))
+					{
+						this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type);
+					}
+				}
+				else
+				{
+					this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type);
+				}
+			}
+			else
+				this->textureRect = this->textureSelector->getTextureRect();
+		}
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && pressOnce != 2)
-	{
-		this->pressOnce = 2;
-	}
-	if (!sf::Mouse::isButtonPressed(sf::Mouse::Right) && pressOnce == 2)
-	{
-		this->pressOnce = 0;
-		if (!this->textureSelector->getActive())
-			this->tileMap->RemoveTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0);
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+		{
+			if (!this->textureSelector->getActive())
+				this->tileMap->RemoveTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0);
+		}
+
 	}
 
 }

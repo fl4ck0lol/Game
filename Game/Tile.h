@@ -1,5 +1,5 @@
 #pragma once
-enum Tile_types{DEFAULT = 0, DAMAGING, DOODAD};
+enum Tile_types{DEFAULT = 0, DAMAGING, DOODAD, ENEMYSPAWNER};
 
 class Tile
 {
@@ -14,7 +14,7 @@ public:
 	Tile(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision = false, short type = Tile_types::DEFAULT);
 	virtual ~Tile();
 
-	void update();
+	virtual void update();
 	void render(sf::RenderTarget& target, const sf::Vector2f playerPos = sf::Vector2f(), sf::Shader* shader = nullptr);
 
 	const std::string getAsString() const;
@@ -28,5 +28,7 @@ public:
 	const bool intersects(const sf::FloatRect bounds) const;
 
 	const short& getType() const;
+
+	const bool SpawnerType() const;
 };
 

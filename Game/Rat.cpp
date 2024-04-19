@@ -1,27 +1,18 @@
 #include "stdafx.h"
-#include "Player.h"
+#include "Rat.h"
 
-Player::Player(sf::Texture& textureSheet, float x, float y)
+Rat::Rat(sf::Texture& textureSheet, float x, float y) : Enemy()
 {
-	this->InitialiseVariables();
-	this->InitialiseMoveComp(350.f, 1500.f, 500.f);
-	this->InitialiseAnimComp(textureSheet);
-	this->InitialiseHitboxComp(this->sprite, 10.f, 5.f, 40.f, 50.f);
-	this->InitialiseAttributeComp(1);
-	this->InitialiseSkillComp();
 
-	this->setPosition(x, y);
-
-	this->InitialiseAnimations();
 }
 
-Player::~Player()
+Rat::~Rat()
 {
 }
 
-void Player::update(const float& dt, sf::Vector2f& mousePos)
+void Rat::update(const float& dt, sf::Vector2f& mousePos)
 {
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
 		this->attributeComponent->getXP(20);
 
 	this->movementComponent->Update(dt);
@@ -32,10 +23,9 @@ void Player::update(const float& dt, sf::Vector2f& mousePos)
 
 	this->hitboxComponent->update();
 
-	this->sword.update(mousePos, this->getPlayerCenter());
 }
 
-void Player::render(sf::RenderTarget& target, sf::Shader* shader, const bool showHitbox)
+void Rat::render(sf::RenderTarget& target, sf::Shader* shader, const bool showHitbox)
 {
 	if (shader)
 	{
@@ -47,40 +37,38 @@ void Player::render(sf::RenderTarget& target, sf::Shader* shader, const bool sho
 		shader->setUniform("hasTexture", true);
 		shader->setUniform("lightPos", this->getPlayerCenter());
 
-		this->sword.render(target, shader);
 	}
 	else
 	{
 		target.draw(this->sprite);
-		this->sword.render(target);
 	}
 
-	if(showHitbox)
+	if (showHitbox)
 		this->hitboxComponent->render(target);
 }
 
-AttributeComponent* Player::getAtrComp()
+AttributeComponent* Rat::getAtrComp()
 {
 	return this->attributeComponent;
 }
 
-void Player::InitialiseVariables()
+void Rat::InitialiseVariables()
 {
-	attacking = false;
-}
-
-void Player::InitialiseAnimations()
-{
-	this->animationComponent->addAnimation("IDLE", 15.f, 0, 0, 8, 0, 64, 64);
-	this->animationComponent->addAnimation("WALK_UP", 11.f, 0, 1, 3, 1, 64, 64);
-	this->animationComponent->addAnimation("WALK_LEFT", 11.f, 4, 1, 7, 1, 64, 64);
-	this->animationComponent->addAnimation("WALK_RIGHT", 11.f, 8, 1, 11, 1, 64, 64);
-	this->animationComponent->addAnimation("WALK_DOWN", 11.f, 12, 1, 15, 1, 64, 64);
-	this->animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 64, 64);
 
 }
 
-void Player::updateAttack(const float& dt)
+void Rat::InitialiseAnimations()
+{
+	this->animationComponent->addAnimation("IDLE", 25.f, 0, 0, 3, 0, 60, 64);
+	this->animationComponent->addAnimation("WALK_DOWN", 11.f, 0, 1, 3, 1, 60, 64);
+	this->animationComponent->addAnimation("WALK_LEFT", 11.f, 0, 2, 3, 2, 60, 64);
+	this->animationComponent->addAnimation("WALK_RIGHT", 11.f, 0, 3, 3, 3, 60, 64);
+	this->animationComponent->addAnimation("WALK_UP", 11.f, 0, 4, 3, 4, 60, 64);
+	this->animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 60, 64);
+
+}
+
+void Rat::updateAttack(const float& dt)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
 	{
@@ -95,7 +83,7 @@ void Player::updateAttack(const float& dt)
 	}
 }
 
-void Player::updateAnimation(const float& dt)
+void Rat::updateAnimation(const float& dt)
 {
 	if (this->attacking)
 	{
@@ -123,22 +111,22 @@ void Player::updateAnimation(const float& dt)
 	}
 }
 
-void Player::loseHP(const int hp)
+void Rat::loseHP(const int hp)
 {
 	this->attributeComponent->loseHP(hp);
 }
 
-void Player::loseXP(const int xp)
+void Rat::loseXP(const int xp)
 {
 	this->attributeComponent->loseXP(xp);
 }
 
-void Player::gainHP(const int hp)
+void Rat::gainHP(const int hp)
 {
 	this->attributeComponent->getHP(hp);
 }
 
-void Player::gainXP(const int xp)
+void Rat::gainXP(const int xp)
 {
 	this->attributeComponent->getXP(xp);
 }

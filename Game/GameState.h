@@ -5,6 +5,8 @@
 #include "PauseMenu.h"
 #include "TileMap.h"
 #include "PlayerGUI.h"
+#include "Sword.h"
+#include "Enemy.h"
 
 class Player;
 class PauseMenu;
@@ -34,6 +36,10 @@ private:
     sf::Font font;
     short unsigned lastState;
     TileMap* tileMap;
+
+    std::vector<Enemy*> activeEnemies;
+
+    Sword* sword;
 
     void InitialiseKeyBinds();
     void InitialiseView();

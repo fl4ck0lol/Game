@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GameState.h"
 #include "Player.h"
+#include"Sword.h"
 
 void GameState::InitialiseKeyBinds()
 {
@@ -22,16 +23,22 @@ void GameState::InitialiseKeyBinds()
 GameState::GameState(StateData* stateData)
 	: State(stateData), lastState(0)	
 {
+	this->InitialiseRender();
 	this->InitialiseView();
 	this->InitialiseKeyBinds();
 	this->InitialiseTextures();
 	this->InitialisePlayers();
+	this->InitialiseTileMap();
 	this->InitialiseFonts();
 	this->InitialisePauseMenu();
 	this->InitialiseShaders();
-	this->InitialiseTileMap();
-	this->InitialiseRender();
 	this->InitialisePlayerGUI();
+
+	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 200.f, 100.f));
+	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 500.f, 200.f));
+	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 400.f, 300.f));
+	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 300.f, 400.f));
+	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 150.f, 500.f));
 }
 	
 GameState::~GameState()
@@ -40,6 +47,12 @@ GameState::~GameState()
 	delete this->pausemenu;
 	delete this->playerGUI;
 	delete this->tileMap;
+	delete this->sword;
+
+	for (size_t i = 0; i < this->activeEnemies.size(); ++i)
+	{
+		delete this->activeEnemies[i];
+	}
 }
 
 void GameState::updatePlayerInput(const float& dt)
@@ -66,6 +79,12 @@ void GameState::update(const float& dt)
 		this->updateTileMap(dt);
 		this->player->update(dt, this->mousePositionView);
 		this->playerGUI->update(dt);
+
+		for (size_t i = 0; i < this->activeEnemies.size(); ++i)
+		{
+			this->activeEnemies[i]->update(dt, this->mousePositionView);
+		}
+
 	}
 	else
 	{
@@ -91,7 +110,13 @@ void GameState::render(sf::RenderTarget* target)
 
 	this->tileMap->render(this->renderTexture, this->viewGridPos, &this->coreShader, false, this->player->getPlayerCenter());
 
+	for (size_t i = 0; i < this->activeEnemies.size(); ++i)
+	{
+		this->activeEnemies[i]->render(this->renderTexture);
+	}
+
 	this->player->render(this->renderTexture, &this->coreShader);
+
 
 	this->tileMap->renderDeferred(this->renderTexture, this->player->getPlayerCenter(), &this->coreShader);
 
@@ -118,13 +143,17 @@ void GameState::InitialiseView()
 void GameState::InitialiseTextures()
 {
 
-	if(!this->textures["player_state_idle"].loadFromFile("Resources/player/PLAYER_SHEET2.png"))
+	if(!this->textures["PLAYER"].loadFromFile("Resources/player/PLAYER_SHEET2.png"))
 		throw "ERRORR GameState player texture doesnt load";
+
+	if (!this->textures["ENEMY"].loadFromFile("Resources/Enemy/rat1_60x64.png"))
+		throw "ERRORR GameState enemy texture doesnt load";
+
 }
 
 void GameState::InitialisePlayers()
 {
-	this->player = new Player(this->textures["player_state_idle"], 100, 100);
+	this->player = new Player(this->textures["PLAYER"], 100, 100);
 }
 
 void GameState::updateInput(const float& dt)
@@ -171,8 +200,7 @@ void GameState::updateView(const float& dt)
 
 void GameState::updateTileMap(const float& dt)
 {
-	this->tileMap->update();
-	this->tileMap->updateCollision(this->player, dt);
+	this->tileMap->update(this->player, dt);
 }
 
 void GameState::updatePlayerGUI(const float& dt)
@@ -199,6 +227,7 @@ void GameState::InitialiseTileMap()
 {
 	this->tileMap = new TileMap(this->stateData->gridSize, 100, 100, "Resources/tilesheet3.png");
 	this->tileMap->loadFromFile("Resources/map.txt");
+
 }
 
 void GameState::InitialiseRender()
@@ -211,7 +240,7 @@ void GameState::InitialiseRender()
 void GameState::InitialisePlayerGUI()
 {
 	sf::VideoMode& vm = this->stateData->gSettings->resolution;
-	this->playerGUI = new PlayerGUI(this->player, vm);
+	this->playerGUI = new PlayerGUI(this->player, this->font, vm);
 }
 
 void GameState::InitialiseShaders()
