@@ -18,6 +18,8 @@ void EditorState::InitialiseVars()
 	this->showSidebar = 0;
 	this->showTextureSelector = 0;
 	this->tileLock = 0;
+
+	this->enemyType = 1;
 }
 
 void EditorState::InitialiseKeyBinds()
@@ -275,6 +277,21 @@ void EditorState::updateInput(const float& dt)
 		this->lastState = 0;
 	}
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("ENEMYTYPE"))) && this->lastState == 0)
+	{
+		this->lastState = 7;
+	}
+
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key(this->keyBinds.at("ENEMYTYPE"))) && this->lastState == 7)
+	{
+		if (this->enemyType < 3)
+			++this->enemyType;
+		else
+			this->enemyType = 1;
+
+		this->lastState = 0;
+	}
+
 }
 
 void EditorState::update(const float& dt)
@@ -376,7 +393,8 @@ void EditorState::updateGUI()
 		<< "\ncollision: " << this->collision
 		<< "\ntype: " << this->type
 		<< "\nnum of Tiles: " << this->tileMap->getTileAmount(mousePositionGrid.x, mousePositionGrid.y, this->layer)
-		<< "\nlock: " << this->tileLock;
+		<< "\nlock: " << this->tileLock
+		<< "\nenemy type: " << this->enemyType;
 	this->cursorText.setString(ss.str());
 	this->cursorText.setPosition(this->mousePositionView.x - 100.f, this->mousePositionView.y - 30);
 
@@ -447,7 +465,7 @@ void EditorState::updateTile(const float& dt)
 	}
 	else
 	{
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) )
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			if (!this->textureSelector->getActive())
 			{

@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GameState.h"
 #include "Player.h"
-#include"Sword.h"
+#include "allEnemy.h"
 
 void GameState::InitialiseKeyBinds()
 {
@@ -34,11 +34,11 @@ GameState::GameState(StateData* stateData)
 	this->InitialiseShaders();
 	this->InitialisePlayerGUI();
 
-	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 200.f, 100.f));
-	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 500.f, 200.f));
-	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 400.f, 300.f));
-	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 300.f, 400.f));
-	this->activeEnemies.push_back(new Enemy(this->textures["ENEMY"], 150.f, 500.f));
+	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 200.f, 100.f));
+	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 500.f, 200.f));
+	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 400.f, 300.f));
+	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 300.f, 400.f));
+	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 150.f, 500.f));
 }
 	
 GameState::~GameState()

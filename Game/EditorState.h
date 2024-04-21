@@ -21,6 +21,7 @@ private:
     float cameraSpeed;
 
     short unsigned pressOnce;
+    short enemyType;
 
     bool showSidebar;
     bool showTextureSelector;

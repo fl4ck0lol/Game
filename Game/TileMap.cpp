@@ -167,13 +167,13 @@ void TileMap::render(sf::RenderTarget& target, const sf::Vector2i& gridPos, sf::
 		}
 }
 
-void TileMap::AddTile(const int x, const int y, const int z, const sf::IntRect& rect, const bool collision, const short type)
+void TileMap::AddTile(const int x, const int y, const int z, const sf::IntRect& rect, const bool collision, const short type, const short enemyType)
 {
 	if (x < this->maxSize.x && x >= 0 && y < this->maxSize.y && y >= 0 && z < this->layers && z >= 0)
 	{
 		if (type == ENEMYSPAWNER)
 		{
-			this->map[x][y][z].push_back(new EnemySpawner(x, y, this->gridSizeF, &this->tileTexture, rect, collision, type));
+			this->map[x][y][z].push_back(new EnemySpawner(x, y, this->gridSizeF, &this->tileTexture, rect, collision, type, enemyType));
 			std::cout << "added enemy spawner \n";
 		}
 		else
@@ -182,7 +182,6 @@ void TileMap::AddTile(const int x, const int y, const int z, const sf::IntRect& 
 			std::cout << "added tile \n";
 		}
 	}
-
 }
 
 void TileMap::RemoveTile(const int x, const int y, const int z)
@@ -470,4 +469,3 @@ const bool TileMap::tileEmpty(const int x, const int y, const int z) const
 		return this->map[x][y][z].empty();
 	}
 }
-

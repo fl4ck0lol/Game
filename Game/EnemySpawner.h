@@ -12,10 +12,11 @@ private:
 	sf::Sprite tileShape;
 	bool collision;
 	short unsigned type;
+	short unsigned enemyType;
 
 
 public:
-	EnemySpawner(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision = false, short type = 3);
+	EnemySpawner(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision = false, short type = 3, short enemyType = 0);
 	~EnemySpawner();
 
 	void update();

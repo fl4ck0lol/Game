@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "GameState.h"
 #include "MainMenuState.h"
 #include "GraphicSettings.h"
@@ -39,9 +39,7 @@ public:
 	void render();
 	void run();
 	void updateSFMLevents();
-	void updateDT();
-
-
+	void updateDT();	
 };
 
 

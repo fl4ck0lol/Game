@@ -41,7 +41,7 @@ void MainMenuState::IntitialiseButtons()
 		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), GUI::calcCharSize(vm),
 		sf::Color(107, 36, 12, 250), sf::Color(245, 204, 160, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
 
-	this->buttons["EDITOR"] = new Button(centerButtons(buttonSize_x), GUI::PixelPercentY(60.19, vm), GUI::PixelPercentX(13.13, vm), GUI::PixelPercentY(7.41, vm), L"EDITOR", sf::Color(52, 61, 70, 50), &this->font,
+	this->buttons["EDITOR"] = new Button(centerButtons(buttonSize_x), GUI::PixelPercentY(60.19, vm), GUI::PixelPercentX(13.13, vm), GUI::PixelPercentY(7.41, vm), L"КАРТА", sf::Color(52, 61, 70, 50), &this->font,
 		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), GUI::calcCharSize(vm),
 		sf::Color(107, 36, 12, 250), sf::Color(245, 204, 160, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
 	
@@ -56,8 +56,8 @@ void MainMenuState::InitialiseBackGround()
 	this->Background.setSize(sf::Vector2f(static_cast<float>(this->window->getSize().x), static_cast<float>(this->window->getSize().y)));
 	this->Background.setFillColor(sf::Color(228, 143, 69, 255));
 	
-	this->container.setSize(sf::Vector2f(static_cast<float>(this->window->getSize().x), GUI::PixelPercentY(13.89, vm)));
-	this->container.setPosition(sf::Vector2f(0, GUI::PixelPercentY(3.72, vm)));
+	this->container.setSize(sf::Vector2f(500.f, this->window->getSize().y));
+	this->container.setPosition(sf::Vector2f(this->window->getSize().x / 2 - this->container.getSize().x / 2, 0));
 	this->container.setFillColor(sf::Color(153, 77, 28, 255));
 }
 
@@ -102,8 +102,8 @@ void MainMenuState::render(sf::RenderTarget* target)
 		target = this->window;
 
 	target->draw(this->Background);	
-	this->renderButtons(*target);
 	target->draw(this->container);
+	this->renderButtons(*target);
 
 	sf::Text mousetext;
 	mousetext.setPosition(this->mousePositionView.x, this->mousePositionView.y - 30);

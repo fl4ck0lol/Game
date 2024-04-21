@@ -203,6 +203,9 @@
     <ClInclude Include="Rat.h">
       <Filter>Entities</Filter>
     </ClInclude>
+    <ClInclude Include="allEnemy.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment_shader.frag">

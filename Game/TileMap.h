@@ -48,7 +48,7 @@ public:
 
 	void render(sf::RenderTarget& target, const sf::Vector2i& gridPos, sf::Shader* shader = nullptr, const bool showCollision = false, const sf::Vector2f playerPos = sf::Vector2f());
 
-	void AddTile(const int x, const int y, const int z, const sf::IntRect& rect, const bool collision, const short type);
+	void AddTile(const int x, const int y, const int z, const sf::IntRect& rect, const bool collision, const short type, const short enemyType = 0);
 	void RemoveTile(const int x, const int y, const int z);
 
 	const sf::Texture* getTileTexture() const;

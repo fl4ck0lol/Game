@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EnemySpawner.h"
 
-EnemySpawner::EnemySpawner(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision, short type)
-	: Tile(x, y, gridSizeF, texture, rect, false, Tile_types::ENEMYSPAWNER)
+EnemySpawner::EnemySpawner(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision, short type, short enemyType)
+	: Tile(x, y, gridSizeF, texture, rect, false, Tile_types::ENEMYSPAWNER, enemyType)
 {
 	this->tileShape.setPosition(static_cast<float>(x) * gridSizeF, static_cast<float>(y) * gridSizeF);
 	this->tileShape.setTexture(*texture);
@@ -10,6 +10,7 @@ EnemySpawner::EnemySpawner(int x, int y, float gridSizeF, const sf::Texture* tex
 
 	this->collision = collision;
 	this->type = type;
+	this->enemyType;
 }
 
 EnemySpawner::~EnemySpawner()

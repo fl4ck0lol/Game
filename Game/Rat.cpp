@@ -3,7 +3,14 @@
 
 Rat::Rat(sf::Texture& textureSheet, float x, float y) : Enemy()
 {
+	this->InitialiseVariables();
 
+	this->InitialiseHitboxComp(this->sprite, 13.f, 39.f, 30.f, 30.f);
+	this->InitialiseMoveComp(50.f, 1600.f, 1000.f);
+	this->InitialiseAnimComp(textureSheet);
+
+	this->setPosition(x, y);
+	this->InitialiseAnimations();
 }
 
 Rat::~Rat()
