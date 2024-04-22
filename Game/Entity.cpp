@@ -40,7 +40,7 @@ void Entity::update(const float& dt, sf::Vector2f& mousePos)
 	
 }
 
-void Entity::render(sf::RenderTarget& target, sf::Shader* shader, const bool showHitbox)
+void Entity::render(sf::RenderTarget& target, sf::Shader* shader, Entity* entity, const bool showHitbox)
 {
 
 }
@@ -137,4 +137,9 @@ void Entity::stopVelocityY()
 {
 	if (this->movementComponent)
 		this->movementComponent->stopVelocityY();
+}
+
+const float Entity::getDistance(const Entity* point) const
+{
+	return sqrt(pow(this->getPlayerCenter().x - point->getPlayerCenter().x, 2) + pow(this->getPlayerCenter().y - point->getPlayerCenter().y, 2));
 }

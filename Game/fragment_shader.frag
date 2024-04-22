@@ -8,9 +8,9 @@ void main()
 {
 	vec4 ambient = vec4(0.02, 0.02, 0.5, 1.0);
 	
-	lightPos = (gl_ModelViewProjectionMatrix * vec4(lightPos, 0, 1)).xy;
+	vec2 lightPosProjected = (gl_ModelViewProjectionMatrix * vec4(lightPos, 0, 1)).xy;
 	
-	vec2 lightToFrag = lightPos - vert_pos.xy;
+	vec2 lightToFrag = lightPosProjected - vert_pos.xy;
 	lightToFrag.y = lightToFrag.y / 1.7;
 
 	float vecLength = clamp(length(lightToFrag) * 2, 0, 1);

@@ -1,7 +1,8 @@
 #pragma once
 #include "Tile.h"
-#include "Entity.h"
 #include "EnemySpawner.h"
+#include "allEnemy.h"
+#include "EnemySystem.h"
 
 class Tile;
 class Entity;
@@ -15,6 +16,8 @@ private:
 	float gridSizeF;
 	int layers;
 	std::string fileName;
+
+	std::vector<Enemy*> activeEnemies;
 
 	sf::Texture tileTexture;
 
@@ -66,5 +69,9 @@ public:
 	const sf::Vector2f& getMaxSizeF() const;
 
 	const bool tileEmpty(const int x, const int y, const int z) const;
+
+	void updateTiles(Entity* entity, const float& dt, EnemySystem& enemySystem);
+	void updateWorldBoundsCollision(Entity* entity, const float& dt);
+	void updateTileCollision(Entity* entity, const float& dt);
 };
 

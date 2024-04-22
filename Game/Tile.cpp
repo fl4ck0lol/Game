@@ -5,6 +5,7 @@ Tile::Tile()
 {
 	this->collision = false;
 	this->type = 0;
+	this->enemyType = 0;
 }
 
 Tile::Tile(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision, short type, short enemyType)
@@ -15,6 +16,7 @@ Tile::Tile(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::
 
 	this->collision = collision;
 	this->type = type;
+	this->enemyType = enemyType;
 }
 
 Tile::~Tile()
@@ -44,7 +46,7 @@ const std::string Tile::getAsString() const
 {
 	std::stringstream ss;
 
-	ss << this->tileShape.getTextureRect().left << " " << tileShape.getTextureRect().top << " " << this->collision << " " << this->type;
+	ss << this->tileShape.getTextureRect().left << " " << tileShape.getTextureRect().top << " " << this->collision << " " << this->type << " " << this->enemyType;
 
 	return ss.str();
 }

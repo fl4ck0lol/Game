@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Sword.h"
 
-Sword::Sword() : MeleeWeapon()
+Sword::Sword(unsigned minDmg, unsigned maxDmg, unsigned range, unsigned value, std::string file) : MeleeWeapon(minDmg, maxDmg, range, value, file)
 {
-	this->weaponTexture.loadFromFile("Resources/sword.png");
+
 	this->weaponSprite.setTexture(weaponTexture);
 
 	this->weaponSprite.setOrigin(this->weaponSprite.getGlobalBounds().width / 2.f, this->weaponSprite.getGlobalBounds().height);
@@ -32,4 +32,9 @@ void Sword::render(sf::RenderTarget& target, sf::Shader* shader)
 		target.draw(this->weaponSprite, shader);
 	else
 		target.draw(this->weaponSprite);
+}
+
+Sword* Sword::clone()
+{
+	return new Sword(*this);
 }

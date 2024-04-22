@@ -17,6 +17,7 @@ Player::Player(sf::Texture& textureSheet, float x, float y)
 
 Player::~Player()
 {
+	delete this->sword;
 }
 
 void Player::update(const float& dt, sf::Vector2f& mousePos)
@@ -26,16 +27,16 @@ void Player::update(const float& dt, sf::Vector2f& mousePos)
 
 	this->movementComponent->Update(dt);
 
-	this->updateAttack(dt);
-
 	this->updateAnimation(dt);
 
 	this->hitboxComponent->update();
 
-	this->sword.update(mousePos, this->getPlayerCenter());
+	this->sword->update(mousePos, this->getPlayerCenter());
+
+	this->attributeComponent->update();
 }
 
-void Player::render(sf::RenderTarget& target, sf::Shader* shader, const bool showHitbox)
+void Player::render(sf::RenderTarget& target, sf::Shader* shader, Entity* entity, const bool showHitbox)
 {
 	if (shader)
 	{
@@ -47,12 +48,12 @@ void Player::render(sf::RenderTarget& target, sf::Shader* shader, const bool sho
 		shader->setUniform("hasTexture", true);
 		shader->setUniform("lightPos", this->getPlayerCenter());
 
-		this->sword.render(target, shader);
+		this->sword->render(target, shader);
 	}
 	else
 	{
 		target.draw(this->sprite);
-		this->sword.render(target);
+		this->sword->render(target);
 	}
 
 	if(showHitbox)
@@ -67,6 +68,7 @@ AttributeComponent* Player::getAtrComp()
 void Player::InitialiseVariables()
 {
 	attacking = false;
+	this->sword = new Sword(1, 5, 100, 20, "Resources/sword.png");
 }
 
 void Player::InitialiseAnimations()
@@ -77,22 +79,6 @@ void Player::InitialiseAnimations()
 	this->animationComponent->addAnimation("WALK_RIGHT", 11.f, 8, 1, 11, 1, 64, 64);
 	this->animationComponent->addAnimation("WALK_DOWN", 11.f, 12, 1, 15, 1, 64, 64);
 	this->animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 64, 64);
-
-}
-
-void Player::updateAttack(const float& dt)
-{
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-	{
-		this->attacking = true;
-
-	}
-	if (this->attacking)
-	{
-		if (this->animationComponent->play("ATTACK", dt, true))
-			this->attacking = false;
-
-	}
 }
 
 void Player::updateAnimation(const float& dt)
@@ -141,4 +127,9 @@ void Player::gainHP(const int hp)
 void Player::gainXP(const int xp)
 {
 	this->attributeComponent->getXP(xp);
+}
+
+Weapon* Player::getWeapon() const
+{
+	return this->sword;
 }

@@ -40,6 +40,9 @@
     <Filter Include="map\Tile">
       <UniqueIdentifier>{a9190d18-5f6e-41fc-8fcb-7bc3c5cf9424}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{0df3ea24-7757-465f-84ac-0b59e3da8289}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -123,6 +126,24 @@
     <ClCompile Include="Rat.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="EnemySystem.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="TextTagSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AiOption.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AiFollow.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -205,6 +226,27 @@
     </ClInclude>
     <ClInclude Include="allEnemy.h">
       <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemySystem.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>Item</Filter>
+    </ClInclude>
+    <ClInclude Include="items.h">
+      <Filter>Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="TextTagSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AiOption.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AiFollow.h">
+      <Filter>AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

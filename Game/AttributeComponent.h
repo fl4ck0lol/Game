@@ -40,5 +40,7 @@ public:
 	void loseXP(const int xp);
 	void getHP(const int hp);
 	void getXP(const int xp);
+
+	const bool isDead() const;
 };
 

@@ -80,3 +80,8 @@ void AttributeComponent::getXP(const int xp)
 
 	this->updateLVL();
 }
+
+const bool AttributeComponent::isDead() const
+{
+	return this->HP <= 0;
+}

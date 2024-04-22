@@ -316,7 +316,8 @@ const sf::IntRect& GUI::TextureSelector::getTextureRect() const
 GUI::ProgressBar::ProgressBar(float x, float y, float width, float height, int maxValue, sf::Color* color, sf::Font* font, sf::VideoMode* vm)
 {
 	this->color = *color;
-	this->vm = *vm;
+	if(vm)
+		this->vm = *vm;
 	this->maxValue = maxValue;
 	this->barMaxWidth = width;
 
@@ -330,11 +331,11 @@ GUI::ProgressBar::ProgressBar(float x, float y, float width, float height, int m
 	this->front.setFillColor(sf::Color(this->color));
 	this->front.setPosition(this->back.getPosition());
 
-	if (font)
+	if (font && vm)
 	{
 		this->font = *font;
 		this->text.setFont(this->font);
-		this->text.setCharacterSize(GUI::calcCharSize(*vm) - 10);
+		this->text.setCharacterSize(GUI::calcCharSize(*vm) - 20);
 	}
 
 }
@@ -344,21 +345,32 @@ GUI::ProgressBar::~ProgressBar()
 
 }
 
-void GUI::ProgressBar::update(const int currentValue)
+void GUI::ProgressBar::update(const int currentValue, const int maxValue)
 {
-	float percent = static_cast<float>(currentValue) / static_cast<float>(this->maxValue);
+	float percent = static_cast<float>(currentValue) / static_cast<float>(maxValue);
 
 	this->front.setSize(sf::Vector2f(static_cast<float>(std::floor(this->barMaxWidth * percent)), this->front.getSize().y));
 
 	this->barStr = std::to_string(currentValue) + " / " + std::to_string(maxValue);
 	this->text.setString(barStr);
 	this->text.setPosition(this->back.getPosition().x + (this->back.getSize().x / 2 - this->text.getGlobalBounds().width / 2),
-		this->back.getPosition().y + (this->back.getSize().y / 2 - this->text.getGlobalBounds().height / 1.5));
+		this->back.getPosition().y + (this->back.getSize().y / 2 - this->text.getGlobalBounds().height));
 }
 
-void GUI::ProgressBar::render(sf::RenderTarget& target)
+void GUI::ProgressBar::render(sf::RenderTarget& target, sf::Shader* shader, Entity* player)
 {
+	shader->setUniform("hasTexture", true);
+	shader->setUniform("lightPos", player->getPlayerCenter());
+
 	target.draw(this->back);
+
+	shader->setUniform("hasTexture", true);
+	shader->setUniform("lightPos", player->getPlayerCenter());
+
 	target.draw(this->front);
+
+	shader->setUniform("hasTexture", true);
+	shader->setUniform("lightPos", player->getPlayerCenter());
+
 	target.draw(this->text);
 }

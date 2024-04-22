@@ -25,6 +25,6 @@ public:
 	~PlayerGUI();
 
 	void update(const float& dt);
-	void render(sf::RenderTarget& target);
+	void render(sf::RenderTarget& target, sf::Shader* shader = nullptr, Entity* player = nullptr);
 };
 

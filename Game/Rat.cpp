@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Rat.h"
 
+class Enemy;
+
 Rat::Rat(sf::Texture& textureSheet, float x, float y) : Enemy()
 {
 	this->InitialiseVariables();
@@ -8,13 +10,19 @@ Rat::Rat(sf::Texture& textureSheet, float x, float y) : Enemy()
 	this->InitialiseHitboxComp(this->sprite, 13.f, 39.f, 30.f, 30.f);
 	this->InitialiseMoveComp(50.f, 1600.f, 1000.f);
 	this->InitialiseAnimComp(textureSheet);
+	this->InitialiseAttributeComp(1);
 
 	this->setPosition(x, y);
 	this->InitialiseAnimations();
+
+	this->InitialiseBar();
+
+	this->InitialiseAI();
 }
 
 Rat::~Rat()
 {
+
 }
 
 void Rat::update(const float& dt, sf::Vector2f& mousePos)
@@ -30,9 +38,10 @@ void Rat::update(const float& dt, sf::Vector2f& mousePos)
 
 	this->hitboxComponent->update();
 
+	this->healthBar->update(this->attributeComponent->HP, this->attributeComponent->maxHP);
 }
 
-void Rat::render(sf::RenderTarget& target, sf::Shader* shader, const bool showHitbox)
+void Rat::render(sf::RenderTarget& target, sf::Shader* shader, Entity* player, bool showHitbox)
 {
 	if (shader)
 	{
@@ -44,6 +53,7 @@ void Rat::render(sf::RenderTarget& target, sf::Shader* shader, const bool showHi
 		shader->setUniform("hasTexture", true);
 		shader->setUniform("lightPos", this->getPlayerCenter());
 
+		this->healthBar->render(target, shader, player);
 	}
 	else
 	{
@@ -59,6 +69,7 @@ AttributeComponent* Rat::getAtrComp()
 	return this->attributeComponent;
 }
 
+
 void Rat::InitialiseVariables()
 {
 
@@ -72,8 +83,18 @@ void Rat::InitialiseAnimations()
 	this->animationComponent->addAnimation("WALK_RIGHT", 11.f, 0, 3, 3, 3, 60, 64);
 	this->animationComponent->addAnimation("WALK_UP", 11.f, 0, 4, 3, 4, 60, 64);
 	this->animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 60, 64);
+}
 
+void Rat::InitialiseBar()
+{
+	sf::Color healthColor = sf::Color::Red;
 
+	this->healthBar = new GUI::ProgressBar(
+		this->sprite.getPosition().x, this->sprite.getPosition().y - 10, 50.f, 10.f, this->attributeComponent->HP, &healthColor);
+}
+
+void Rat::InitialiseAI()
+{
 }
 
 void Rat::updateAttack(const float& dt)
@@ -138,3 +159,4 @@ void Rat::gainXP(const int xp)
 {
 	this->attributeComponent->getXP(xp);
 }
+

@@ -12,7 +12,7 @@ void EditorState::InitialiseVars()
 	this->mainView.setSize(sf::Vector2f(static_cast<float>(this->stateData->gSettings->resolution.width), static_cast<float>(this->stateData->gSettings->resolution.height)));
 	this->mainView.setCenter(this->stateData->gSettings->resolution.width / 2, this->stateData->gSettings->resolution.height / 2);
 
-	this->cameraSpeed = 300.f;
+	this->cameraSpeed = 600.f;
 	this->layer = 0;
 	this->pressOnce = 0;
 	this->showSidebar = 0;
@@ -440,12 +440,12 @@ void EditorState::updateTile(const float& dt)
 				{
 					if (this->tileMap->tileEmpty(this->mousePositionGrid.x, this->mousePositionGrid.y, 0))
 					{
-						this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type);
+						this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type, this->enemyType);
 					}
 				}
 				else
 				{
-					this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type);
+					this->tileMap->AddTile(this->mousePositionGrid.x, this->mousePositionGrid.y, 0, this->textureRect, this->collision, this->type, this->enemyType);
 				}
 			}
 			else

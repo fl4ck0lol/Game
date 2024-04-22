@@ -7,6 +7,7 @@ protected:
 	sf::Sprite tileShape;
 	bool collision;
 	short unsigned type;
+	short enemyType;
 
 public:
 

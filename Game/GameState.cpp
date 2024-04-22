@@ -28,17 +28,12 @@ GameState::GameState(StateData* stateData)
 	this->InitialiseKeyBinds();
 	this->InitialiseTextures();
 	this->InitialisePlayers();
+	this->InitialiseEnemySystem();
 	this->InitialiseTileMap();
 	this->InitialiseFonts();
 	this->InitialisePauseMenu();
 	this->InitialiseShaders();
 	this->InitialisePlayerGUI();
-
-	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 200.f, 100.f));
-	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 500.f, 200.f));
-	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 400.f, 300.f));
-	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 300.f, 400.f));
-	this->activeEnemies.push_back(new Rat(this->textures["ENEMY"], 150.f, 500.f));
 }
 	
 GameState::~GameState()
@@ -48,6 +43,7 @@ GameState::~GameState()
 	delete this->playerGUI;
 	delete this->tileMap;
 	delete this->sword;
+	delete this->enemySystem;
 
 	for (size_t i = 0; i < this->activeEnemies.size(); ++i)
 	{
@@ -75,16 +71,16 @@ void GameState::update(const float& dt)
 	if (!this->paused)
 	{
 		this->updateView(dt);
+
 		this->updatePlayerInput(dt);
+
 		this->updateTileMap(dt);
+
 		this->player->update(dt, this->mousePositionView);
+
 		this->playerGUI->update(dt);
 
-		for (size_t i = 0; i < this->activeEnemies.size(); ++i)
-		{
-			this->activeEnemies[i]->update(dt, this->mousePositionView);
-		}
-
+		this->updateEnemiesAndCombat(dt);
 	}
 	else
 	{
@@ -110,9 +106,9 @@ void GameState::render(sf::RenderTarget* target)
 
 	this->tileMap->render(this->renderTexture, this->viewGridPos, &this->coreShader, false, this->player->getPlayerCenter());
 
-	for (size_t i = 0; i < this->activeEnemies.size(); ++i)
+	for (size_t enemy = 0; enemy < this->activeEnemies.size(); ++enemy)
 	{
-		this->activeEnemies[i]->render(this->renderTexture);
+		this->activeEnemies[enemy]->render(this->renderTexture, &this->coreShader, this->player);
 	}
 
 	this->player->render(this->renderTexture, &this->coreShader);
@@ -121,7 +117,7 @@ void GameState::render(sf::RenderTarget* target)
 	this->tileMap->renderDeferred(this->renderTexture, this->player->getPlayerCenter(), &this->coreShader);
 
 	this->renderTexture.setView(this->renderTexture.getDefaultView());
-	this->playerGUI->render(this->renderTexture);
+	this->playerGUI->render(this->renderTexture, &this->coreShader, this->player);
 
 	if (this->paused)
 	{
@@ -142,13 +138,11 @@ void GameState::InitialiseView()
 
 void GameState::InitialiseTextures()
 {
-
 	if(!this->textures["PLAYER"].loadFromFile("Resources/player/PLAYER_SHEET2.png"))
 		throw "ERRORR GameState player texture doesnt load";
 
-	if (!this->textures["ENEMY"].loadFromFile("Resources/Enemy/rat1_60x64.png"))
-		throw "ERRORR GameState enemy texture doesnt load";
-
+	if (!this->textures["RAT"].loadFromFile("Resources/Enemy/rat1_60X64.png"))
+		throw "ERRORR GameState player texture doesnt load";
 }
 
 void GameState::InitialisePlayers()
@@ -200,12 +194,56 @@ void GameState::updateView(const float& dt)
 
 void GameState::updateTileMap(const float& dt)
 {
-	this->tileMap->update(this->player, dt);
+	this->tileMap->updateWorldBoundsCollision(this->player, dt);
+	this->tileMap->updateTileCollision(this->player, dt);
+	this->tileMap->updateTiles(this->player, dt, *this->enemySystem);
 }
 
 void GameState::updatePlayerGUI(const float& dt)
 {
 	this->playerGUI->update(dt);
+}
+
+void GameState::updateCombat(Enemy* enemy, const int index, const float& dt)
+{
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && 
+		enemy->getGlobalBounds().contains(this->mousePositionView) &&
+		enemy->getDistance(this->player) < this->player->getWeapon()->getRange())
+	{
+		if (this->player->getWeapon()->getAttackTimer() && 
+			enemy->getGlobalBounds().contains(this->mousePositionView) &&
+			enemy->getDistance(this->player) < this->player->getWeapon()->getRange())
+		{
+			enemy->loseHP(this->player->getWeapon()->getDmg());
+			std::cout << enemy->GetAtrComp()->HP << "\n";
+		}
+	}
+}
+
+void GameState::updateEnemiesAndCombat(const float& dt)
+{
+	unsigned index = 0;
+	for (auto& enemy : this->activeEnemies)
+	{
+		enemy->update(dt, this->mousePositionView);
+		this->updateCombat(enemy, index, dt);
+		enemy->update(dt, this->mousePositionView);
+
+		this->tileMap->updateTileCollision(enemy, dt);
+		this->tileMap->updateWorldBoundsCollision(enemy, dt);
+
+		if (enemy->isDead())
+		{
+			this->player->gainXP(enemy->giveXp());	
+
+			delete this->activeEnemies[index];	
+			this->activeEnemies.erase(this->activeEnemies.begin() + index);
+			--index;
+		}
+
+		++index;
+	}
 }
 
 void GameState::InitialiseFonts()
@@ -247,4 +285,9 @@ void GameState::InitialiseShaders()
 {
 	if (!this->coreShader.loadFromFile("vertex_shader.vert", "fragment_shader.frag"))
 		std::cout << "shader didnt load \n";
+}
+
+void GameState::InitialiseEnemySystem()
+{
+	this->enemySystem = new EnemySystem(this->activeEnemies, this->textures);
 }

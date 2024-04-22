@@ -3,8 +3,8 @@
 
 Enemy::Enemy() 
 {
-
-	
+	this->InitialiseVariables();
+	this->InitialiseAnimations();
 }
 
 Enemy::~Enemy()
@@ -18,19 +18,22 @@ AttributeComponent* Enemy::getAtrComp()
 	return this->attributeComponent;
 }
 
+void Enemy::loseHP(const int dmg)
+{
+	if (this->attributeComponent)
+	{
+		this->attributeComponent->loseHP(dmg);	
+	}
+}
+
 void Enemy::InitialiseVariables()
 {
-	
+	this->xp = 10;
+	this->attacking = false;
 }
 
 void Enemy::InitialiseAnimations()
 {
-	this->animationComponent->addAnimation("IDLE", 25.f, 0, 0, 3, 0, 60, 64);
-	this->animationComponent->addAnimation("WALK_DOWN", 11.f, 0, 1, 3, 1, 60, 64);
-	this->animationComponent->addAnimation("WALK_LEFT", 11.f, 0, 2, 3, 2, 60, 64);
-	this->animationComponent->addAnimation("WALK_RIGHT", 11.f, 0, 3, 3, 3, 60, 64);
-	this->animationComponent->addAnimation("WALK_UP", 11.f, 0, 4, 3, 4, 60, 64);
-	this->animationComponent->addAnimation("ATTACK", 5.f, 0, 2, 1, 2, 60, 64);
 
 }
 
@@ -49,9 +52,33 @@ void Enemy::updateAttack(const float& dt)
 	}
 }
 
-void Enemy::loseHP(const int hp)
+
+void Enemy::loseHp(const int hp)
 {
 	this->attributeComponent->loseHP(hp);
+}
+
+const AttributeComponent* Enemy::GetAtrComp() const
+{
+	if (this->attributeComponent)
+		return this->attributeComponent;
+	else
+		return nullptr;
+}
+
+const bool Enemy::isDead() const
+{
+	if (this->attributeComponent)
+	{
+		return this->attributeComponent->isDead();
+	}
+
+	return false;
+}
+
+const unsigned& Enemy::giveXp() const
+{
+	return this->xp;
 }
 
 void Enemy::loseXP(const int xp)

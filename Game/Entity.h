@@ -29,7 +29,7 @@ public:
 
 	virtual void move(const float x, const float y, const float& dt);
 	virtual void update(const float& dt, sf::Vector2f& mousePos) = 0;
-	virtual void render(sf::RenderTarget& target, sf::Shader* shader = nullptr, const bool showHitbox = false) = 0;
+	virtual void render(sf::RenderTarget& target, sf::Shader* shader = nullptr, Entity* entity = nullptr, const bool showHitbox = false) = 0;
 	virtual void setPosition(const float x, const float y);
 
 	void InitialiseAnimComp(sf::Texture& textureSheet);
@@ -47,5 +47,7 @@ public:
 
 	virtual void stopVelocityX();
 	virtual void stopVelocityY();
+
+	virtual const float getDistance(const Entity* point) const;
 
 };

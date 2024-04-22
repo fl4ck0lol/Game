@@ -1,6 +1,6 @@
 #pragma once
 #include "Entity.h"
-#include "Sword.h"
+#include "items.h"
 #include "TileMap.h"
 
 class Player :
@@ -11,7 +11,7 @@ public:
     ~Player();
 
     void update(const float& dt, sf::Vector2f& mousePos);
-    void render(sf::RenderTarget& target, sf::Shader* shader = nullptr, const bool showHitbox = false);
+    void render(sf::RenderTarget& target, sf::Shader* shader = nullptr, Entity* entity = nullptr, const bool showHitbox = false);
 
     AttributeComponent* getAtrComp();
 
@@ -20,15 +20,16 @@ public:
     void gainHP(const int hp);
     void gainXP(const int xp);
 
-private:
+    Weapon* getWeapon() const;
 
+private:
+    Sword* sword;
     bool attacking;
-    Sword sword;
+
+
     void InitialiseVariables();
 
     void InitialiseAnimations();
-
-    void updateAttack(const float& dt);
     void updateAnimation(const float& dt);
 
 };

@@ -21,6 +21,8 @@ class GameState :
 {
 private:
 
+    EnemySystem* enemySystem;
+        
     sf::View view;
     sf::Vector2i viewGridPos;
 
@@ -51,6 +53,7 @@ private:
     void InitialiseRender();
     void InitialisePlayerGUI();
     void InitialiseShaders();
+    void InitialiseEnemySystem();
 
 public:
     GameState(StateData* stateData);
@@ -64,5 +67,7 @@ public:
     void updateView(const float& dt);
     void updateTileMap(const float& dt);
     void updatePlayerGUI(const float& dt);
+    void updateCombat(Enemy* enemy, const int index, const float& dt);
+    void updateEnemiesAndCombat(const float& dt);
 };
 
