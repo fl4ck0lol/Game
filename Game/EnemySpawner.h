@@ -18,6 +18,7 @@ private:
 	short unsigned type;
 	short unsigned enemyType;
 
+	int enemiesCounter;
 	int enemyAmount;
 	int enemyCounter;
 	sf::Clock enemySpawnTimer;
@@ -44,5 +45,11 @@ public:
 	const bool& getSpawned();
 
 	const bool canSpawn() const;
+
+	const int& getEnemyCounter() const;
+	const int& getEnemyAmount() const;
+
+	void increaseEnemyCounter();
+	void decreaseEnemyCounter();
 };
 

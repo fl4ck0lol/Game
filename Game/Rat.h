@@ -2,6 +2,7 @@
 #include "allEnemy.h"
 #include "GUI.h"
 #include "Entity.h"
+#include "AiFollow.h"
 
 class Enemy;
 
@@ -9,7 +10,7 @@ class Rat : public Enemy
 {
 public:
 
-    Rat(sf::Texture& textureSheet, float x, float y);
+    Rat(sf::Texture& textureSheet, float x, float y, EnemySpawner& enemySpawner, Entity& player);
     virtual ~Rat();
 
 
@@ -28,6 +29,9 @@ private:
 
     bool attacking;
     GUI::ProgressBar* healthBar;
+
+    AiFollow* follow;
+    Entity& player;
 
     void updateAttack(const float& dt);
     void updateAnimation(const float& dt);

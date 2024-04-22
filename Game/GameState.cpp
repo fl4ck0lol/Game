@@ -237,8 +237,8 @@ void GameState::updateEnemiesAndCombat(const float& dt)
 		{
 			this->player->gainXP(enemy->giveXp());	
 
-			delete this->activeEnemies[index];	
-			this->activeEnemies.erase(this->activeEnemies.begin() + index);
+			this->enemySystem->removeEnemy(index);
+
 			--index;
 		}
 
@@ -289,5 +289,5 @@ void GameState::InitialiseShaders()
 
 void GameState::InitialiseEnemySystem()
 {
-	this->enemySystem = new EnemySystem(this->activeEnemies, this->textures);
+	this->enemySystem = new EnemySystem(this->activeEnemies, this->textures, *this->player);
 }

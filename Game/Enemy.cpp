@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Enemy.h"
 
-Enemy::Enemy() 
+Enemy::Enemy(EnemySpawner& enemySpawner) : enemySpawner(enemySpawner)	
 {
 	this->InitialiseVariables();
 	this->InitialiseAnimations();
@@ -79,6 +79,11 @@ const bool Enemy::isDead() const
 const unsigned& Enemy::giveXp() const
 {
 	return this->xp;
+}
+
+EnemySpawner& Enemy::getSpawner()
+{
+	return this->enemySpawner;
 }
 
 void Enemy::loseXP(const int xp)

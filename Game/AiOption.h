@@ -1,5 +1,6 @@
 #pragma once
-#include "allEnemy.h"
+#include "Entity.h"
+
 class AiOption
 {
 protected:
@@ -7,9 +8,11 @@ protected:
 	Entity& self;
 
 public:
-	AiOption(Entity* self, Entity& entity);
-	virtual ~AiOption();
+	AiOption(Entity& self, Entity& entity) : self(self), entity(entity)
+	{
 
-	virtual void update() = 0;
+	}
+
+	virtual void update(const float& dt) = 0;
 };
 

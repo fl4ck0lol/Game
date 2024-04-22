@@ -3,10 +3,9 @@
 
 class Enemy;
 
-Rat::Rat(sf::Texture& textureSheet, float x, float y) : Enemy()
+Rat::Rat(sf::Texture& textureSheet, float x, float y, EnemySpawner& enemySpawner, Entity& player) : Enemy(enemySpawner), player(player)
 {
 	this->InitialiseVariables();
-
 	this->InitialiseHitboxComp(this->sprite, 13.f, 39.f, 30.f, 30.f);
 	this->InitialiseMoveComp(50.f, 1600.f, 1000.f);
 	this->InitialiseAnimComp(textureSheet);
@@ -18,11 +17,14 @@ Rat::Rat(sf::Texture& textureSheet, float x, float y) : Enemy()
 	this->InitialiseBar();
 
 	this->InitialiseAI();
+
+	this->follow = new AiFollow(*this, player);
 }
+//201
 
 Rat::~Rat()
 {
-
+	delete this->follow;
 }
 
 void Rat::update(const float& dt, sf::Vector2f& mousePos)
@@ -39,6 +41,8 @@ void Rat::update(const float& dt, sf::Vector2f& mousePos)
 	this->hitboxComponent->update();
 
 	this->healthBar->update(this->attributeComponent->HP, this->attributeComponent->maxHP);
+
+	this->follow->update(dt);
 }
 
 void Rat::render(sf::RenderTarget& target, sf::Shader* shader, Entity* player, bool showHitbox)
@@ -95,6 +99,7 @@ void Rat::InitialiseBar()
 
 void Rat::InitialiseAI()
 {
+	
 }
 
 void Rat::updateAttack(const float& dt)

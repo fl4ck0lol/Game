@@ -5,7 +5,7 @@
 #include "EnemySystem.h"
 
 class Tile;
-class Entity;
+class EnemySpawner;
 
 class TileMap
 {

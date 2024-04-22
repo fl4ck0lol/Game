@@ -8,6 +8,8 @@ class Enemy :
 {
 private:
 
+    EnemySpawner& enemySpawner;
+
     bool attacking;
     unsigned xp;
 
@@ -19,7 +21,7 @@ private:
 
 public:
 
-    Enemy();
+    Enemy(EnemySpawner& enemySpawner);
     virtual ~Enemy();
 
 
@@ -40,5 +42,7 @@ public:
     virtual const bool isDead() const;
 
     virtual const unsigned& giveXp() const;
+
+    EnemySpawner& getSpawner();
 };
 

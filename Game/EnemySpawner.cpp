@@ -6,8 +6,9 @@ void EnemySpawner::InitVars()
 	this->enemyAmount = 5;
 	this->enemyCounter = 0;
 	this->enemySpawnTimer.restart();
-	this->enemyTimeToSpawn = 5000;
+	this->enemyTimeToSpawn = 10000;
 	this->firstSpawn = true;
+	this->enemiesCounter = 0;
 }
 
 EnemySpawner::EnemySpawner(int x, int y, float gridSizeF, const sf::Texture* texture, const sf::IntRect& rect, bool collision, short type, short enemyType)
@@ -84,6 +85,36 @@ const bool EnemySpawner::canSpawn() const
 		return true;
 	}
 	return false;
+}
+
+const int& EnemySpawner::getEnemyCounter() const
+{
+	return this->enemyCounter;
+}
+
+const int& EnemySpawner::getEnemyAmount() const
+{
+	return this->enemyAmount;
+}
+
+void EnemySpawner::increaseEnemyCounter()
+{
+	if (this->enemiesCounter > this->enemyAmount)
+	{
+		this->enemiesCounter = this->enemyAmount;
+	}
+	else
+		++this->enemyCounter;
+}
+
+void EnemySpawner::decreaseEnemyCounter()
+{
+	if (this->enemiesCounter < 0)
+	{
+		this->enemiesCounter = 0;
+	}
+	else
+		--this->enemyCounter;
 }
 
 void EnemySpawner::setSpawned(const bool spawned)
