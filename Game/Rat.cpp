@@ -41,8 +41,10 @@ void Rat::update(const float& dt, sf::Vector2f& mousePos)
 	this->hitboxComponent->update();
 
 	this->healthBar->update(this->attributeComponent->HP, this->attributeComponent->maxHP);
+	this->healthBar->updatePosition(this->getPosition().x, this->getPosition().y);
 
 	this->follow->update(dt);
+
 }
 
 void Rat::render(sf::RenderTarget& target, sf::Shader* shader, Entity* player, bool showHitbox)

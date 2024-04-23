@@ -116,5 +116,7 @@ namespace GUI {
 
 		void update(const int currentValue, const int maxValue);
 		void render(sf::RenderTarget& target, sf::Shader* shader, Entity* player);
+
+		void updatePosition(const float x, const float y);
 	};
 }

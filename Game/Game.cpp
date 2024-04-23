@@ -1,14 +1,13 @@
 #include "stdafx.h"
 #include "Game.h"
 
-void Game::initialiseVariebles()
+void Game::initialiseVariables()
 {
 	this->window = NULL;
 	this->dt = 0.f;
 	this->gridSize = 64.f;
 }
 
-//------------------ initialise Functions---------------
 void Game::initialiseWindow()
 {
 	if(this->gSettings.fullscreen)
@@ -31,12 +30,10 @@ void Game::initialiseKeys()
 		int value = 0;
 		while (ifs >> key >> value)
 		{
-			this->supportedKeys[key] = value;
-					
+			this->supportedKeys[key] = value;		
 		}
 	}
 	ifs.close();
-
 }
 
 void Game::initialiseGraphicSetings()
@@ -63,17 +60,16 @@ void Game::endApp()
 	std::cout << "ending app";
 }
 
-//------------------ Functions--------------------------
 void Game::update()
 {
 	this->updateSFMLevents();
 
 	if (!this->states.empty())
 	{
-		this->states.top()->update(this->dt);
-
 		if (this->window->hasFocus())
 		{
+			this->states.top()->update(this->dt);
+
 			if (this->states.top()->getQuit())
 			{
 				this->states.top()->endState();
@@ -86,15 +82,12 @@ void Game::update()
 	{
 		this->endApp();
 		this->window->close();
-	}
-		
+	}	
 }
 
 void Game::render()
 {
 	this->window->clear();
-
-	//---------- render items----------
 	
 	if(!this->states.empty())
 		this->states.top()->render();
@@ -105,7 +98,6 @@ void Game::render()
 
 void Game::run()
 {
-
 	while (this->window->isOpen())
 	{
 		this->updateDT();
@@ -131,10 +123,9 @@ void Game::updateDT()
 
 //---------------------------------
 
-//-------constructor--------
 Game::Game()
 {
-	this->initialiseVariebles();
+	this->initialiseVariables();
 	this->initialiseGraphicSetings();
 	this->initialiseWindow();
 	this->initialiseKeys();
@@ -142,7 +133,6 @@ Game::Game()
 	this->initialiseState();
 }
 
-//-------deconstructor--------
 Game::~Game()
 {
 	delete this->window;

@@ -241,7 +241,6 @@ void GameState::updateEnemiesAndCombat(const float& dt)
 
 			--index;
 		}
-
 		++index;
 	}
 }

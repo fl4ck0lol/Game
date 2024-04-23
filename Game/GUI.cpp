@@ -45,7 +45,6 @@ GUI::Button::Button(float x, float y, float width, float height, std::wstring te
 	this->buttonState = idle_state;
 	this->lastState = idle_state;
 	this->setId(id);
-
 }
 
 GUI::Button::~Button()
@@ -145,9 +144,9 @@ GUI::DropDownList::DropDownList(float x, float y, float width, float height, sf:
 
 	this->activeElem = new Button(x, y, width, height,
 		list[defaultIndex], sf::Color(52, 61, 70, 0), &this->font,
-		sf::Color(107, 36, 12, 150),
-		sf::Color(245, 204, 160, 150),
-		sf::Color(52, 61, 70, 150),
+		sf::Color(107, 36, 12, 255),
+		sf::Color(245, 204, 160, 255),
+		sf::Color(52, 61, 70, 255),
 		charsize,
 		sf::Color(255, 255, 255, 255),
 		sf::Color(255, 255, 255, 255),
@@ -157,9 +156,9 @@ GUI::DropDownList::DropDownList(float x, float y, float width, float height, sf:
 	{
 		this->list.push_back(new Button(x, y + (i * height), width, height,
 			list[i], sf::Color(52, 61, 70, 0), &this->font,
-			sf::Color(107, 36, 12, 150),
-			sf::Color(245, 204, 160, 150),
-			sf::Color(52, 61, 70, 150),
+			sf::Color(107, 36, 12, 255),
+			sf::Color(245, 204, 160, 255),
+			sf::Color(52, 61, 70, 255),
 			charsize,
 			sf::Color(255, 255, 255, 255),
 			sf::Color(255, 255, 255, 255),
@@ -255,7 +254,6 @@ GUI::TextureSelector::TextureSelector(float x, float y, float width, float heigh
 
 	this->textureRect.width = static_cast<int>(this->gridsize);
 	this->textureRect.height = static_cast<int>(this->gridsize);
-
 }
 
 GUI::TextureSelector::~TextureSelector()
@@ -337,7 +335,6 @@ GUI::ProgressBar::ProgressBar(float x, float y, float width, float height, int m
 		this->text.setFont(this->font);
 		this->text.setCharacterSize(GUI::calcCharSize(*vm) - 20);
 	}
-
 }
 
 GUI::ProgressBar::~ProgressBar()
@@ -373,4 +370,10 @@ void GUI::ProgressBar::render(sf::RenderTarget& target, sf::Shader* shader, Enti
 	shader->setUniform("lightPos", player->getPlayerCenter());
 
 	target.draw(this->text);
+}
+
+void GUI::ProgressBar::updatePosition(const float x, const float y)
+{
+	this->back.setPosition(x, y);
+	this->front.setPosition(x, y);
 }

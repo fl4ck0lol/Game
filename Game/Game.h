@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "GameState.h"
 #include "MainMenuState.h"
 #include "GraphicSettings.h"
 
@@ -7,19 +6,16 @@ class Game
 {
 private:
 
+	float gridSize;
+	float dt;
+
 	GraphicSettings gSettings;
+
 	sf::RenderWindow *window;
+
 	sf::Event sfEvent;
 
 	sf::Clock dtClock;
-	float dt;
-
-	void initialiseVariebles();
-	void initialiseWindow();
-	void initialiseState();
-	void initialiseKeys();
-	void initialiseGraphicSetings();
-	void initialiseStateData();
 
 	std::stack<State*> states;
 
@@ -27,7 +23,13 @@ private:
 
 	StateData stateData;
 
-	float gridSize;
+
+	void initialiseVariables();
+	void initialiseWindow();
+	void initialiseState();
+	void initialiseKeys();
+	void initialiseGraphicSetings();
+	void initialiseStateData();
 	
 public:
 
@@ -41,7 +43,3 @@ public:
 	void updateSFMLevents();
 	void updateDT();	
 };
-
-
-
-

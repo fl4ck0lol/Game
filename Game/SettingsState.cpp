@@ -55,11 +55,35 @@ void SettingsState::IntitialiseButtons()
 		modes_str.push_back(std::to_wstring(i.width) + L'x' + std::to_wstring(i.height));
 	}
 
-	this->dropDownButtons["RESOLUTION"] = new DropDownList(GUI::PixelPercentX(19.19, vm),
+	this->dropDownButtons["RESOLUTION"] = new DropDownList(GUI::PixelPercentX(10.19, vm),
 		GUI::PixelPercentY(27.78, vm), GUI::PixelPercentX(12.63, vm),
 		GUI::PixelPercentY(4.63, vm), this->font,
 		GUI::calcCharSize(vm) - 20, modes_str.data(),
 		modes_str.size(), 0);
+
+	std::vector<std::wstring> fullscreen_modes;
+
+	fullscreen_modes.push_back(L"ЦЯЛ ЕКРАН");
+	fullscreen_modes.push_back(L"ДА");
+	fullscreen_modes.push_back(L"НЕ");
+
+	this->dropDownButtons["FULLSCREEN"] = new DropDownList(GUI::PixelPercentX(30.19, vm),
+		GUI::PixelPercentY(27.78, vm), GUI::PixelPercentX(12.63, vm),
+		GUI::PixelPercentY(4.63, vm), this->font,
+		GUI::calcCharSize(vm) - 20, fullscreen_modes.data(),
+		fullscreen_modes.size(), 0);
+
+	std::vector<std::wstring> vsync;
+
+	vsync.push_back(L"СИНХРОНИЗАЦИЯ");
+	vsync.push_back(L"ДА");
+	vsync.push_back(L"НЕ");
+
+	this->dropDownButtons["VSYNC"] = new DropDownList(GUI::PixelPercentX(50.19, vm),
+		GUI::PixelPercentY(27.78, vm), GUI::PixelPercentX(15.63, vm),
+		GUI::PixelPercentY(4.63, vm), this->font,
+		GUI::calcCharSize(vm) - 20, vsync.data(),
+		vsync.size(), 0);
 }
 
 const int SettingsState::centerButtons(float button_x)
@@ -81,11 +105,6 @@ void SettingsState::InitialiseBackGround()
 void SettingsState::initialiseText()
 {
 	sf::VideoMode& vm = this->stateData->gSettings->resolution;
-	this->optionsText.setFont(this->font);
-	this->optionsText.setPosition(sf::Vector2f(GUI::PixelPercentX(5.05, vm), GUI::PixelPercentY(27.78, vm)));
-	this->optionsText.setCharacterSize(GUI::calcCharSize(vm));
-	this->optionsText.setFillColor(sf::Color::Black);
-	this->optionsText.setString(L"Резoлюция \n\n Цял екран \n\n antialiasing \n\n vsync");
 
 	this->settingsText.setCharacterSize(GUI::calcCharSize(vm) * 2);
 	this->settingsText.setFont(this->font);
@@ -96,6 +115,10 @@ void SettingsState::initialiseText()
 void SettingsState::initialiseVars()
 {
 	this->vmodes = sf::VideoMode::getFullscreenModes();
+	this->fullscreen_mode.push_back(true);
+	this->fullscreen_mode.push_back(false);
+	this->vsync.push_back(true);
+	this->vsync.push_back(false);
 }
 
 SettingsState::SettingsState(StateData* stateData) : State(stateData)
@@ -169,7 +192,6 @@ void SettingsState::updateButtons(const float& dt)
 		it.second->update(this->mousePositionWindow);
 	}
 
-
 	if (this->buttons["END_STATE"]->isPressed())
 	{
 		this->endState();
@@ -180,7 +202,14 @@ void SettingsState::updateButtons(const float& dt)
 		if (this->dropDownButtons["RESOLUTION"]->getActiveElemID() != 0)
 		{
 			this->stateData->gSettings->resolution = this->vmodes[this->dropDownButtons["RESOLUTION"]->getActiveElemID() - 1];
-			this->window->create(this->stateData->gSettings->resolution, this->stateData->gSettings->title, sf::Style::Default);
+			if (this->dropDownButtons["FULLSCREEN"]->getActiveElemID() != 0)
+			{
+				this->stateData->gSettings->fullscreen = this->fullscreen_mode[this->dropDownButtons["FULLSCREEN"]->getActiveElemID() - 1];
+				this->window->create(this->stateData->gSettings->resolution, this->stateData->gSettings->title, sf::Style::Fullscreen);
+			}
+			else
+				this->window->create(this->stateData->gSettings->resolution, this->stateData->gSettings->title, sf::Style::Default);
+
 			this->InitialiseBackGround();
 			this->initialiseText();
 			this->buttons["APPLY"]->updateProperties(GUI::PixelPercentX(80, vm), 
@@ -194,7 +223,6 @@ void SettingsState::updateButtons(const float& dt)
 				GUI::PixelPercentX(13.13, vm),
 				GUI::PixelPercentY(7.41, vm),
 				GUI::calcCharSize(vm));
-
 		}
 	}
 

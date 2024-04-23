@@ -19,6 +19,8 @@ private:
 
     sf::Text optionsText;
     std::vector<sf::VideoMode> vmodes;
+    std::vector<bool> fullscreen_mode;
+    std::vector<bool> vsync;
 
     void InitialiseKeyBinds();
     void InitialiseFonts();
