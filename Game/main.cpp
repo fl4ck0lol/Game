@@ -8,8 +8,8 @@ int main()
 
     Game game;
 
-    HWND hwnd = GetConsoleWindow();
-    ShowWindow(hwnd, SW_HIDE);
+    /*HWND hwnd = GetConsoleWindow();
+    ShowWindow(hwnd, SW_HIDE);*/
 
     game.run();
 

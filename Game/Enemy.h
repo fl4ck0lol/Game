@@ -19,6 +19,9 @@ private:
     virtual void InitialiseVariables() = 0;
     virtual void InitialiseAnimations() = 0;
 
+    sf::Clock attackTimer;
+    bool canAttack;
+
 public:
 
     Enemy(EnemySpawner& enemySpawner);
@@ -44,5 +47,7 @@ public:
     virtual const unsigned& giveXp() const;
 
     EnemySpawner& getSpawner();
+
+    const bool getAttackTimer();
 };
 

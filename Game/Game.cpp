@@ -92,7 +92,6 @@ void Game::render()
 	if(!this->states.empty())
 		this->states.top()->render();
 
-
 	this->window->display();
 }
 
@@ -120,9 +119,7 @@ void Game::updateDT()
 {
 	this->dt = this->dtClock.restart().asSeconds();
 }
-
 //---------------------------------
-
 Game::Game()
 {
 	this->initialiseVariables();

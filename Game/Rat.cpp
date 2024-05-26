@@ -6,12 +6,12 @@ class Enemy;
 Rat::Rat(sf::Texture& textureSheet, float x, float y, EnemySpawner& enemySpawner, Entity& player) : Enemy(enemySpawner), player(player)
 {
 	this->InitialiseVariables();
-	this->InitialiseHitboxComp(this->sprite, 13.f, 39.f, 30.f, 30.f);
-	this->InitialiseMoveComp(50.f, 1600.f, 1000.f);
+	this->setPosition(x, y);
 	this->InitialiseAnimComp(textureSheet);
+	this->InitialiseHitboxComp(this->sprite, 45.f, 50.f, -25.f, 30.f);
+	this->InitialiseMoveComp(50.f, 1600.f, 1000.f);
 	this->InitialiseAttributeComp(1);
 
-	this->setPosition(x, y);
 	this->InitialiseAnimations();
 
 	this->InitialiseBar();
@@ -41,7 +41,7 @@ void Rat::update(const float& dt, sf::Vector2f& mousePos)
 	this->hitboxComponent->update();
 
 	this->healthBar->update(this->attributeComponent->HP, this->attributeComponent->maxHP);
-	this->healthBar->updatePosition(this->getPosition().x, this->getPosition().y);
+	this->healthBar->updatePosition(this->getPosition().x - 35, this->getPosition().y - 10);
 
 	this->follow->update(dt);
 
@@ -75,7 +75,6 @@ AttributeComponent* Rat::getAtrComp()
 	return this->attributeComponent;
 }
 
-
 void Rat::InitialiseVariables()
 {
 
@@ -96,7 +95,7 @@ void Rat::InitialiseBar()
 	sf::Color healthColor = sf::Color::Red;
 
 	this->healthBar = new GUI::ProgressBar(
-		this->sprite.getPosition().x, this->sprite.getPosition().y - 10, 50.f, 10.f, this->attributeComponent->HP, &healthColor);
+		this->sprite.getPosition().x - 20, this->sprite.getPosition().y - 20, 50.f, 10.f, this->attributeComponent->HP, &healthColor);
 }
 
 void Rat::InitialiseAI()
@@ -166,4 +165,3 @@ void Rat::gainXP(const int xp)
 {
 	this->attributeComponent->getXP(xp);
 }
-

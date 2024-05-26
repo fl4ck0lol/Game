@@ -21,7 +21,7 @@ void GameState::InitialiseKeyBinds()
 }
 
 GameState::GameState(StateData* stateData)
-	: State(stateData), lastState(0)	
+	: State(stateData), lastState(0), end(0)
 {
 	this->InitialiseRender();
 	this->InitialiseView();
@@ -34,6 +34,7 @@ GameState::GameState(StateData* stateData)
 	this->InitialisePauseMenu();
 	this->InitialiseShaders();
 	this->InitialisePlayerGUI();
+	this->InitialiseEndScreen();
 }
 	
 GameState::~GameState()
@@ -48,6 +49,11 @@ GameState::~GameState()
 	for (size_t i = 0; i < this->activeEnemies.size(); ++i)
 	{
 		delete this->activeEnemies[i];
+	}
+
+	for (auto it = this->endButtons.begin(); it != this->endButtons.end(); ++it)
+	{
+		delete it->second;
 	}
 }
 
@@ -66,26 +72,38 @@ void GameState::updatePlayerInput(const float& dt)
 void GameState::update(const float& dt)
 {
 	this->updateMousePositions(&this->view);
-	this->updateInput(dt);
 
-	if (!this->paused)
+	if (!(this->player->returnCurrentHp() <= 0))
 	{
-		this->updateView(dt);
+		this->updateInput(dt);
 
-		this->updatePlayerInput(dt);
+		if (!this->paused)
+		{
+			this->updateView(dt);
 
-		this->updateTileMap(dt);
+			this->updatePlayerInput(dt);
 
-		this->player->update(dt, this->mousePositionView);
+			this->updateTileMap(dt);
 
-		this->playerGUI->update(dt);
+			this->player->update(dt, this->mousePositionView);
 
-		this->updateEnemiesAndCombat(dt);
+			this->playerGUI->update(dt);
+
+			this->updateEnemiesAndCombat(dt);
+		}
+		else
+		{
+			this->pausemenu->update(this->mousePositionWindow);
+			this->updatePauseMenuButtons();
+		}
 	}
 	else
 	{
-		this->pausemenu->update(this->mousePositionWindow);
-		this->updatePauseMenuButtons();
+		this->end = 1;
+		for (auto& i : endButtons)
+		{
+			i.second->update(this->mousePositionWindow);
+		}
 	}
 }
 
@@ -128,6 +146,28 @@ void GameState::render(sf::RenderTarget* target)
 	this->renderTexture.display();
 	this->renderSprite.setTexture(this->renderTexture.getTexture());
 	target->draw(this->renderSprite);
+
+	if (end == 1)
+	{
+		target->draw(this->endRect);
+		target->draw(this->endText);
+
+		for (auto& i : endButtons)
+		{
+			i.second->render(*target);
+		}
+
+		if (this->endButtons["NEWGAME"]->isPressed())
+		{
+			this->states->pop();
+			this->states->push(new GameState(stateData));
+		}
+
+		if (this->endButtons["EXIT"]->isPressed())
+		{
+			this->states->pop();
+		}
+	}
 }
 
 void GameState::InitialiseView()
@@ -178,6 +218,13 @@ void GameState::updateInput(const float& dt)
 
 		this->lastState = 0;
 	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X))
+	{
+		this->player->loseHP(6);
+	}
+
+
 }
 
 void GameState::updateView(const float& dt)
@@ -206,7 +253,6 @@ void GameState::updatePlayerGUI(const float& dt)
 
 void GameState::updateCombat(Enemy* enemy, const int index, const float& dt)
 {
-
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && 
 		enemy->getGlobalBounds().contains(this->mousePositionView) &&
 		enemy->getDistance(this->player) < this->player->getWeapon()->getRange())
@@ -216,9 +262,17 @@ void GameState::updateCombat(Enemy* enemy, const int index, const float& dt)
 			enemy->getDistance(this->player) < this->player->getWeapon()->getRange())
 		{
 			enemy->loseHP(this->player->getWeapon()->getDmg());
-			std::cout << enemy->GetAtrComp()->HP << "\n";
 		}
 	}
+
+	if (enemy->getGlobalBounds().intersects(this->player->getGlobalBounds()))
+	{
+		if (enemy->getAttackTimer())
+		{
+			this->player->loseHP(1);
+		}
+	}
+
 }
 
 void GameState::updateEnemiesAndCombat(const float& dt)
@@ -289,4 +343,28 @@ void GameState::InitialiseShaders()
 void GameState::InitialiseEnemySystem()
 {
 	this->enemySystem = new EnemySystem(this->activeEnemies, this->textures, *this->player);
+}
+
+void GameState::InitialiseEndScreen()
+{
+	this->endRect.setSize(sf::Vector2f(this->window->getSize().x / 3, this->window->getSize().y));
+	this->endRect.setPosition(this->window->getSize().x / 2 - this->endRect.getSize().x / 2, 0);
+	this->endRect.setFillColor(sf::Color(20, 20, 20, 150));
+
+	this->endText.setString(L"КРАЙ");
+	this->endText.setFont(this->font);
+	this->endText.setCharacterSize(50);
+	this->endText.setFillColor(sf::Color::White);
+	this->endText.setPosition(this->endRect.getPosition().x + (this->endRect.getSize().x / 2) - this->endText.getGlobalBounds().width / 2, 150);
+
+	int x = this->endRect.getPosition().x + (this->endRect.getSize().x / 2) - 100;
+
+	this->endButtons["NEWGAME"] = new GUI::Button(x, 700, 200, 150, L"НОВА ИГРА", sf::Color(52, 61, 70, 0), &this->font,
+		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), 50,
+		sf::Color(192, 197, 206, 250), sf::Color(101, 115, 126, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
+
+	this->endButtons["EXIT"] = new GUI::Button(x, 850, 200, 150, L"ИЗХОД", sf::Color(52, 61, 70, 0), &this->font,
+		sf::Color(192, 197, 206, 0), sf::Color(101, 115, 126, 0), sf::Color(52, 61, 70, 0), 50,
+		sf::Color(192, 197, 206, 250), sf::Color(101, 115, 126, 255), sf::Color(52, 61, 70, 200), sf::Color::Transparent, 0);
+
 }

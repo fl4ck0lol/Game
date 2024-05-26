@@ -22,6 +22,8 @@ public:
 
     Weapon* getWeapon() const;
 
+    const int returnCurrentHp() const;
+
 private:
     Sword* sword;
     bool attacking;

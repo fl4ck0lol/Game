@@ -85,3 +85,8 @@ const bool AttributeComponent::isDead() const
 {
 	return this->HP <= 0;
 }
+
+const int AttributeComponent::returnHp() const
+{
+	return this->HP;
+}

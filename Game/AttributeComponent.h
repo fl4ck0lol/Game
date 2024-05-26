@@ -42,5 +42,7 @@ public:
 	void getXP(const int xp);
 
 	const bool isDead() const;
+
+	const int returnHp() const;
 };
 

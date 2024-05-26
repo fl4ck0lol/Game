@@ -133,3 +133,8 @@ Weapon* Player::getWeapon() const
 {
 	return this->sword;
 }
+
+const int Player::returnCurrentHp() const
+{
+	return this->attributeComponent->returnHp();
+}

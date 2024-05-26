@@ -24,7 +24,6 @@ public:
 
     AttributeComponent* getAtrComp();
 
-
 private:
 
     bool attacking;

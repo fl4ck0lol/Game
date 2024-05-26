@@ -86,6 +86,17 @@ EnemySpawner& Enemy::getSpawner()
 	return this->enemySpawner;
 }
 
+const bool Enemy::getAttackTimer()
+{
+	if (this->attackTimer.getElapsedTime().asMilliseconds() >= 200)
+	{
+		this->attackTimer.restart();
+		return true;
+	}
+	return false;
+}
+
+
 void Enemy::loseXP(const int xp)
 {
 	this->attributeComponent->loseXP(xp);

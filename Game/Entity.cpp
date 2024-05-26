@@ -66,7 +66,7 @@ void Entity::InitialiseMoveComp(const float MaxVelocity, const float acceleratio
 
 void Entity::InitialiseHitboxComp(sf::Sprite& sprite, const float offset_x, const float offset_y, const float width, const float height)
 {
-	this->hitboxComponent = new HitboxComponent(this->sprite, offset_x, offset_x, width, height);
+	this->hitboxComponent = new HitboxComponent(this->sprite, offset_x, offset_y, width, height);
 }
 
 void Entity::InitialiseAttributeComp(const unsigned lvl)

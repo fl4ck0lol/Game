@@ -54,6 +54,14 @@ private:
     void InitialisePlayerGUI();
     void InitialiseShaders();
     void InitialiseEnemySystem();
+    void InitialiseEndScreen();
+
+    bool end;
+
+    sf::RectangleShape endRect;
+    sf::Text endText;
+
+    std::map<std::string, GUI::Button*> endButtons;
 
 public:
     GameState(StateData* stateData);

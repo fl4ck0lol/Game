@@ -12,17 +12,13 @@ private:
 	GraphicSettings gSettings;
 
 	sf::RenderWindow *window;
-
 	sf::Event sfEvent;
-
 	sf::Clock dtClock;
 
 	std::stack<State*> states;
-
 	std::map<std::string, int> supportedKeys;
 
 	StateData stateData;
-
 
 	void initialiseVariables();
 	void initialiseWindow();
